@@ -20,14 +20,14 @@ const published = (projects as any[]).filter((p) => p.published);
     </section>
 
     <section style="border-top: none; padding-top: 0;">
-      <div class="project-grid">
+      <div class="project-grid" data-anime="project-grid">
         {published.map((p, i) => {
           const primaryHref = p.links?.detail
             ? withBase(p.links.detail)
             : p.links?.repo || p.links?.demo || p.links?.paper || null;
           const Tag = primaryHref ? 'a' : 'div';
           return (
-            <Tag class="project-card" href={primaryHref} {...(primaryHref && primaryHref.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+            <Tag class="project-card" data-anime-item href={primaryHref} {...(primaryHref && primaryHref.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
               <span class="project-card-mark">{String(i + 1).padStart(2, '0')}</span>
               <h3>{p.title}</h3>
               <p>{p.description}</p>
@@ -51,4 +51,32 @@ const published = (projects as any[]).filter((p) => p.published);
       </div>
     </section>
   </div>
+
+  <script>
+    import { animate, stagger, eases } from 'animejs';
+
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const grid = document.querySelector('[data-anime="project-grid"]');
+      if (grid) {
+        const cards = grid.querySelectorAll('[data-anime-item]');
+        const io = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) {
+            animate(cards, {
+              opacity: [0, 1],
+              translateY: [32, 0],
+              delay: stagger(80, { from: 'first' }),
+              duration: 700,
+              ease: eases.outExpo,
+            });
+            io.disconnect();
+          }
+        }, { threshold: 0.15 });
+        io.observe(grid);
+        cards.forEach((card) => {
+          card.addEventListener('mouseenter', () => animate(card, { translateY: -6, duration: 260, ease: eases.outQuad }));
+          card.addEventListener('mouseleave', () => animate(card, { translateY: 0, duration: 260, ease: eases.outQuad }));
+        });
+      }
+    }
+  </script>
 </BaseLayout>
