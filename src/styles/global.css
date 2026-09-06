@@ -1,30 +1,30 @@
 /* ═══════════════════════════════════════════════════
-   VIOT RESEARCH — Industrial Brutalist / Swiss Light
-   Design system: Archivo Black + Newsreader + JetBrains Mono
+   Shantanu Pawar — Professional Research / Swiss Light
+   Design system: Space Grotesk + Newsreader + JetBrains Mono
    4-token palette. Zero border-radius. Strict grid.
 ═══════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Newsreader:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Newsreader:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ── Tokens ─────────────────────────────────────── */
 :root {
-  --bg:      #F4F4F0;
-  --fg:      #050505;
-  --surface: #EBEBEB;
-  --accent:  #E61919;
-  --muted:   #6B6B65;
-  --border-color: #050505;
+  --bg:      #F7F7F4;
+  --fg:      #12161C;
+  --surface: #ECECE6;
+  --accent:  #1D4ED8;
+  --muted:   #61645F;
+  --border-color: #12161C;
   --border:  1px solid var(--border-color);
 
   /* colors used on top of fg-colored panels (callout, footer, table head),
      which invert relative to the page — so these need their own dark override */
-  --on-fg-hairline: rgba(244,244,240,0.15);
-  --on-fg-muted:    rgba(244,244,240,0.45);
-  --on-fg-faint:    rgba(244,244,240,0.03);
-  --scanline-color: rgba(5,5,5,0.015);
-  --good:           #1a3a5c;
+  --on-fg-hairline: rgba(247,247,244,0.15);
+  --on-fg-muted:    rgba(247,247,244,0.5);
+  --on-fg-faint:    rgba(247,247,244,0.03);
+  --scanline-color: transparent;
+  --good:           #166534;
 
-  --font-display: 'Archivo Black', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
   --font-body:    'Newsreader', Georgia, serif;
   --font-mono:    'JetBrains Mono', 'Menlo', monospace;
 
@@ -42,38 +42,39 @@
 
 /* ── Dark mode ─────────────────────────────────────
    Explicit toggle (data-theme) always wins; absent that,
-   fall back to the OS preference. Same red accent, same
+   fall back to the OS preference. Same accent hue, same
    fonts, same zero-radius grid — only the palette inverts. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:      #0A0A08;
-    --fg:      #F4F4F0;
-    --surface: #171714;
-    --accent:  #FF4B4B;
-    --muted:   #96968C;
-    --border-color: rgba(244,244,240,0.16);
+    --bg:      #0B0D10;
+    --fg:      #F1F2EF;
+    --surface: #171A1E;
+    --accent:  #6EA8FF;
+    --muted:   #9498A0;
+    --border-color: rgba(241,242,239,0.16);
 
-    --on-fg-hairline: rgba(5,5,5,0.15);
-    --on-fg-muted:    rgba(5,5,5,0.5);
-    --on-fg-faint:    rgba(5,5,5,0.04);
-    --scanline-color: rgba(244,244,240,0.02);
-    --good:           #6FA8DC;
+    --on-fg-hairline: rgba(11,13,16,0.15);
+    --on-fg-muted:    rgba(11,13,16,0.5);
+    --on-fg-faint:    rgba(11,13,16,0.04);
+    --scanline-color: transparent;
+    --good:           #4ADE80;
 
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg:      #0A0A08;
-  --fg:      #F4F4F0;
-  --surface: #171714;
-  --accent:  #FF4B4B;
-  --muted:   #96968C;
-  --border-color: rgba(244,244,240,0.16);
+  --bg:      #0B0D10;
+  --fg:      #F1F2EF;
+  --surface: #171A1E;
+  --accent:  #6EA8FF;
+  --muted:   #9498A0;
+  --border-color: rgba(241,242,239,0.16);
 
-  --on-fg-hairline: rgba(5,5,5,0.15);
-  --on-fg-muted:    rgba(5,5,5,0.5);
-  --on-fg-faint:    rgba(5,5,5,0.04);
-  --scanline-color: rgba(244,244,240,0.02);
+  --on-fg-hairline: rgba(11,13,16,0.15);
+  --on-fg-muted:    rgba(11,13,16,0.5);
+  --on-fg-faint:    rgba(11,13,16,0.04);
+  --scanline-color: transparent;
+  --good:           #4ADE80;
 
   color-scheme: dark;
 }
@@ -140,10 +141,9 @@ body::after {
 h1 {
   font-family: var(--font-display);
   font-size: var(--size-display);
-  font-weight: 900;
-  line-height: 0.95;
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
   color: var(--fg);
 }
 h2 {
@@ -167,9 +167,8 @@ h3 {
 .section-title {
   font-family: var(--font-display);
   font-size: clamp(2rem, 4vw, 3.5rem);
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--fg);
   margin-bottom: 3rem;
   text-wrap: balance;
@@ -258,7 +257,7 @@ section {
 .nav-logo {
   font-family: var(--font-display);
   font-size: 0.9rem;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--fg);
@@ -528,9 +527,8 @@ section {
 .callout h2 {
   font-family: var(--font-display);
   font-size: clamp(1.6rem, 3.5vw, 3rem);
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--bg);
   margin-bottom: 1.5rem;
   margin-top: 0.5rem;

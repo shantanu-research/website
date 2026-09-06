@@ -1,49 +1,44 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import allProjects from '../../data/projects.json';
+import profile from '../../data/profile.json';
 
 const base = import.meta.env.BASE_URL;
-const featured = (allProjects as any[]).filter((p) => p.published).slice(0, 4);
+const published = (allProjects as any[]).filter((p) => p.published);
 ---
 <BaseLayout title="Shantanu Pawar — Projects & Research" page="home">
   <div class="container">
     <section class="hero">
-      <p class="hero-eyebrow">Flagship research program</p>
-      <h1 data-gsap="hero" aria-label="Virtual Ion-Optics Testbed">
-        {"VIRTUAL ION-OPTICS TESTBED".split('').map(c =>
-          <span class="char" style="opacity:0;">{c === ' ' ? ' ' : c}</span>
-        )}
-      </h1>
+      <p class="hero-eyebrow">Mechanical Engineering — PVG's COETM, Pune</p>
+      <h1 data-anime="hero-title">Shantanu Pawar</h1>
       <p class="hero-sub">
-        A multiscale assessment of carbon-nanomaterial accelerator-grid coatings for charge-exchange (CEX) erosion mitigation in the NASA NSTAR ion thruster.
+        Propulsion, plasma physics, and computational engineering — from a GPU plasma-simulation
+        research program to embedded systems, quantum computing, and structural analysis.
+        This page indexes the work; each project links to its own writeup, repo, or dataset.
       </p>
-
       <div class="hero-meta">
         <div class="hero-stat">
-          <div class="hero-stat-val">36</div>
-          <div class="hero-stat-label">Campaign Runs</div>
+          <div class="hero-stat-val">{published.length}</div>
+          <div class="hero-stat-label">Active Projects</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-val">13.2×</div>
-          <div class="hero-stat-label">Max LEF Gain</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-val">2.3</div>
-          <div class="hero-stat-label">Onset MV/m</div>
+          <div class="hero-stat-val">3</div>
+          <div class="hero-stat-label">Conference Submissions</div>
         </div>
       </div>
       <div class="btn-row" style="margin-top: 2.5rem;">
-        <a class="btn-outline btn-outline--accent" href={`${base}projects/`}>View all projects</a>
+        <a class="btn-outline btn-outline--accent" href={`${base}viot/`}>Flagship: VIOT research</a>
+        <a class="btn-outline" href={`${base}about/`}>About &amp; contact</a>
       </div>
     </section>
 
-    <section>
+    <section style="border-top: none; padding-top: 0;">
       <div class="section-inner">
         <div class="section-label-col"><h2 class="label">Portfolio</h2></div>
         <div>
-          <h3 class="section-title">Other projects</h3>
+          <h3 class="section-title">Projects &amp; research</h3>
           <div class="project-grid" data-anime="project-grid">
-            {featured.map((p, i) => {
+            {published.map((p, i) => {
               const href = p.links?.detail
                 ? (p.links.detail.startsWith('/') ? `${base}${p.links.detail.slice(1)}` : p.links.detail)
                 : (p.links?.repo || `${base}projects/`);
@@ -52,6 +47,11 @@ const featured = (allProjects as any[]).filter((p) => p.published).slice(0, 4);
                   <span class="project-card-mark">{String(i + 1).padStart(2, '0')}</span>
                   <h3>{p.title}</h3>
                   <p>{p.description}</p>
+                  {p.tags?.length > 0 && (
+                    <div class="tag-row">
+                      {p.tags.slice(0, 2).map((t: string) => <span class="tag-chip">{t}</span>)}
+                    </div>
+                  )}
                   {p.status && <span class="project-card-status">{p.status}</span>}
                 </a>
               );
@@ -60,82 +60,22 @@ const featured = (allProjects as any[]).filter((p) => p.published).slice(0, 4);
         </div>
       </div>
     </section>
-
-    <section>
-      <div class="section-inner">
-        <div class="section-label-col"><h2 class="label">The Problem</h2></div>
-        <div>
-          <h3 class="section-title">The dominant end-of-life mechanism.</h3>
-          <div class="prose-block">
-            <p>Gridded ion thrusters accelerate Xe⁺ electrostatically. Fast beam ions undergo resonant charge exchange with slow neutrals, creating slow CEX ions born inside the accelerating field. These are pulled into the negatively biased accelerator grid, sputtering it.</p>
-            <p>Our research asks: Can thin nanostructured carbon coatings on a conventional Mo grid capture the sputter resistance of bulk carbon grids, without the structural, thermal, and manufacturing penalties of monolithic carbon optics?</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="section-inner">
-        <div class="section-label-col"><h2 class="label">Core Hypotheses</h2></div>
-        <div class="hyp-list">
-          <div class="hyp-card" data-gsap="hyp">
-            <span class="hyp-num">H1</span>
-            <div>
-              <p class="hyp-stmt">GNP and/or graphene coatings reduce accelerator-grid erosion.</p>
-              <p class="hyp-evidence">GNP reduces erosion 1.39–4.23×. Graphene worsens it (0.37–0.85×, i.e. up to 2.7× more mass loss). Cross-run CV &lt; 0.57% on all 12 cases.</p>
-            </div>
-            <span class="verdict verdict--confirmed">Partially confirmed</span>
-          </div>
-
-          <div class="hyp-card" data-gsap="hyp">
-            <span class="hyp-num">H2</span>
-            <div>
-              <p class="hyp-stmt">Graphene "transparency" diminishes; penetrative energy transfer dominates.</p>
-              <p class="hyp-evidence">Heavy Xe passes through the monolayer, depositing momentum in the Mo substrate; the low-thermal-coupling sheet cannot dissipate the cascade, ejecting C and sputtering Mo.</p>
-            </div>
-            <span class="verdict verdict--warning">Sign reversed</span>
-          </div>
-
-          <div class="hyp-card" data-gsap="hyp">
-            <span class="hyp-num">H3</span>
-            <div>
-              <p class="hyp-stmt">GNP nanoscale roughness geometrically shadows grazing-angle flux.</p>
-              <p class="hyp-evidence">Reproduces the suppression of the 60–75° Mo yield peak via RustBCA + Gaussian facet-tilt convolution (σ=15°).</p>
-            </div>
-            <span class="verdict verdict--confirmed">Confirmed</span>
-          </div>
-
-          <div class="hyp-card" data-gsap="hyp">
-            <span class="hyp-num">H4</span>
-            <div>
-              <p class="hyp-stmt">GNP edge-rich morphology elevates field-emission / vacuum-breakdown risk.</p>
-              <p class="hyp-evidence">Onset field drops from 7.3 → 2.3 MV/m. Fowler–Nordheim Weibull model confirms this is potentially design-limiting.</p>
-            </div>
-            <span class="verdict verdict--limiting">Design-limiting</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="callout" data-gsap="callout">
-        <p class="accent-label">Key Insight</p>
-        <h2>The Graphene Paradox</h2>
-        <p>Intuition suggests an ultra-hard 2D coating should protect the substrate. Crystalline MD shows the opposite. A heavy Xe ion at CEX energies passes <em>through</em> the monolayer, depositing momentum in the Mo substrate; the low-thermal-coupling sheet cannot dissipate the cascade, so it ejects several carbon atoms per impact <em>and</em> the substrate sputters through it.</p>
-        <p class="highlight" data-gsap="scramble">The coating adds an erosion channel instead of removing one.</p>
-      </div>
-    </section>
   </div>
 
   <script>
-    import gsap from 'gsap';
-    import { ScrollTrigger } from 'gsap/ScrollTrigger';
-    import { TextPlugin } from 'gsap/TextPlugin';
     import { animate, stagger, eases } from 'animejs';
-    gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      // Portfolio grid — anime.js stagger rise + a subtle hover tilt, triggered on scroll into view
+      const title = document.querySelector('[data-anime="hero-title"]');
+      if (title) {
+        animate(title, {
+          opacity: [0, 1],
+          translateY: [24, 0],
+          duration: 900,
+          ease: eases.outExpo,
+        });
+      }
+
       const grid = document.querySelector('[data-anime="project-grid"]');
       if (grid) {
         const cards = grid.querySelectorAll('[data-anime-item]');
@@ -144,13 +84,13 @@ const featured = (allProjects as any[]).filter((p) => p.published).slice(0, 4);
             animate(cards, {
               opacity: [0, 1],
               translateY: [32, 0],
-              delay: stagger(90, { from: 'first' }),
+              delay: stagger(70, { from: 'first' }),
               duration: 700,
               ease: eases.outExpo,
             });
             io.disconnect();
           }
-        }, { threshold: 0.15 });
+        }, { threshold: 0.1 });
         io.observe(grid);
         cards.forEach((card) => {
           card.addEventListener('mouseenter', () => {
@@ -160,36 +100,6 @@ const featured = (allProjects as any[]).filter((p) => p.published).slice(0, 4);
             animate(card, { translateY: 0, duration: 260, ease: eases.outQuad });
           });
         });
-      }
-
-      // 1. Hero diffraction assemble
-      gsap.fromTo('.hero h1 .char',
-        { opacity: 0, y: () => gsap.utils.random(-80, 80), rotation: () => gsap.utils.random(-45, 45) },
-        { opacity: 1, y: 0, rotation: 0, duration: 1.4, stagger: { amount: 0.8, from: 'random' }, ease: 'expo.out' }
-      );
-
-      // 2. Hypothesis stamp
-      gsap.utils.toArray('.hyp-card').forEach((card: any, i) => {
-        gsap.fromTo(card,
-          { opacity: 0, scale: 1.05, y: 20 },
-          {
-            scrollTrigger: { trigger: card, start: 'top 85%' },
-            opacity: 1, scale: 1, y: 0, duration: 0.6, ease: 'back.out(1.4)', delay: i * 0.1
-          }
-        );
-      });
-
-      // 3. Graphene paradox scramble
-      const highlight = document.querySelector('[data-gsap="scramble"]');
-      if (highlight) {
-        const text = highlight.textContent;
-        gsap.fromTo(highlight,
-          { text: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" },
-          {
-            scrollTrigger: { trigger: highlight, start: 'top 90%' },
-            text: text, duration: 1.5, ease: 'none'
-          }
-        );
       }
     }
   </script>

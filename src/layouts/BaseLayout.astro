@@ -31,13 +31,12 @@ const base = import.meta.env.BASE_URL;
 
   <nav class="nav" aria-label="Site navigation">
     <div class="nav-inner">
-      <a href={base} class="nav-logo" aria-label="VIOT Research — home">VIOT</a>
+      <a href={base} class="nav-logo" aria-label="Shantanu Pawar — home">S. PAWAR</a>
       <div class="nav-links" data-nav-links>
-        <a href={base} aria-current={page === 'home' ? 'page' : undefined}>Overview</a>
-        <a href={`${base}methods/`} aria-current={page === 'methods' ? 'page' : undefined}>Methods</a>
-        <a href={`${base}data/`} aria-current={page === 'data' ? 'page' : undefined}>Data &amp; Results</a>
+        <a href={base} aria-current={page === 'home' ? 'page' : undefined}>Home</a>
         <a href={`${base}projects/`} aria-current={page === 'projects' ? 'page' : undefined}>Projects</a>
-        <a href={`${base}about/`} aria-current={page === 'about' ? 'page' : undefined}>People</a>
+        <a href={`${base}viot/`} aria-current={page === 'viot' ? 'page' : undefined}>VIOT</a>
+        <a href={`${base}about/`} aria-current={page === 'about' ? 'page' : undefined}>About</a>
       </div>
       <button type="button" class="theme-toggle" data-theme-toggle aria-label="Toggle dark mode">
         <span class="icon-light" aria-hidden="true">☾</span>
@@ -56,9 +55,9 @@ const base = import.meta.env.BASE_URL;
 
   <footer>
     <div class="footer-inner">
-      <span class="footer-logo">VIOT Research</span>
+      <span class="footer-logo">S. Pawar</span>
       <span class="footer-copy">© 2026 Shantanu Pawar — PVG's COETM Pune</span>
-      <span class="footer-open">Data is Open</span>
+      <span class="footer-open">Open Research</span>
     </div>
   </footer>
 

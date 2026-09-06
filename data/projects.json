@@ -7,9 +7,53 @@
     "tech": ["Python", "CUDA", "LAMMPS", "PIC-MCC", "DSMC"],
     "status": "Active — Phase V",
     "links": {
-      "detail": "/",
+      "detail": "/viot/",
       "repo": "https://github.com/chiku149/VIOT-Research"
     },
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "n2o-rcs-icaetm",
+    "title": "Time-Series Modeling of Pulsed-Mode N₂O RCS Thrusters",
+    "description": "A five-phase computational study for ICAETM 2026: a lumped-parameter physics model of catalytic N₂O decomposition, statistical characterization of the resulting pulse-train time series, and an LSTM predictive model benchmarked against an ARIMA baseline.",
+    "tags": ["Propulsion", "Time-Series ML"],
+    "tech": ["Python", "LSTM", "ARIMA"],
+    "status": "In progress — ICAETM 2026 submission",
+    "links": {},
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "turbulence-closure-icmai",
+    "title": "Tensor Basis Neural Networks vs. Random Forests for RANS Turbulence Closure",
+    "description": "A methods study for ICMAI-MAC 2026 (NIT Goa) comparing Tensor Basis Neural Networks and Tensor Basis Random Forests as machine-learned Reynolds-stress anisotropy closures on the NASA wall-mounted hump benchmark, with spatially-resolved SHAP analysis.",
+    "tags": ["Machine Learning", "CFD", "Turbulence Modeling"],
+    "tech": ["Python", "TBNN", "TBRF", "SHAP"],
+    "status": "In progress — ICMAI-MAC 2026",
+    "links": {},
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "smart-ambulance-gateway",
+    "title": "Smart Ambulance Device-Interoperability Gateway",
+    "description": "A working connected-ambulance prototype: auto-detects BLE medical-device protocols, prioritizes vital-sign data under bandwidth loss, stores-and-forwards offline, and normalizes telemetry into FHIR-style JSON for a hospital triage dashboard.",
+    "tags": ["IoT", "Embedded Systems", "Healthcare"],
+    "tech": ["Python", "BLE", "ESP32", "FHIR"],
+    "status": "Working prototype",
+    "links": {},
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "sih-ohrc-toolkit",
+    "title": "Chandrayaan-2 OHRC Lunar Imagery Toolkit",
+    "description": "A Smart India Hackathon entry (SIH26166) building image co-registration, calibration, and matching tools for Chandrayaan-2 Orbiter High Resolution Camera (OHRC) lunar surface imagery from ISRO's PRADAN archive.",
+    "tags": ["Remote Sensing", "Computer Vision", "Space"],
+    "tech": ["Python"],
+    "status": "Hackathon build",
+    "links": {},
     "thumbnail": null,
     "published": true
   },
