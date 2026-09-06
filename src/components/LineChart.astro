@@ -1,0 +1,89 @@
+---
+interface Series {
+  name: string;
+  values: number[];
+  colorClass: 's1' | 's2';
+}
+interface Props {
+  xLabels: string[];
+  series: Series[];
+  caption?: string;
+  unit?: string;
+  height?: number;
+}
+const { xLabels, series, caption, unit = '', height = 240 } = Astro.props;
+
+const W = 640;
+const H = height;
+const padL = 44;
+const padR = 16;
+const padT = 24;
+const padB = 32;
+const plotW = W - padL - padR;
+const plotH = H - padT - padB;
+
+const allValues = series.flatMap((s) => s.values);
+const minVal = Math.min(...allValues) * 0.92;
+const maxVal = Math.max(...allValues) * 1.08;
+const range = maxVal - minVal || 1;
+
+function xFor(i: number) {
+  return padL + (i / (xLabels.length - 1)) * plotW;
+}
+function yFor(v: number) {
+  return padT + plotH - ((v - minVal) / range) * plotH;
+}
+function fmt(v: number) {
+  if (Number.isInteger(v)) return String(v);
+  return v.toFixed(2);
+}
+
+const gridSteps = 4;
+const gridLines = Array.from({ length: gridSteps + 1 }, (_, i) => {
+  const v = minVal + (range / gridSteps) * i;
+  return { y: yFor(v), label: fmt(v) };
+});
+---
+<div class="chart-wrap">
+  {caption && <p class="chart-caption">{caption}</p>}
+  <div class="chart-legend">
+    {series.map((s) => (
+      <span class="chart-legend-item">
+        <span class={`chart-legend-swatch ${s.colorClass}`}></span>
+        {s.name}
+      </span>
+    ))}
+  </div>
+  <svg class="chart-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={caption}>
+    {gridLines.map((g) => (
+      <>
+        <line class="chart-grid-line" x1={padL} x2={W - padR} y1={g.y} y2={g.y} />
+        <text class="chart-tick" x={padL - 8} y={g.y + 3} text-anchor="end">{g.label}</text>
+      </>
+    ))}
+    <line class="chart-axis" x1={padL} x2={W - padR} y1={padT + plotH} y2={padT + plotH} />
+
+    {xLabels.map((lbl, i) => (
+      <text class="chart-tick" x={xFor(i)} y={padT + plotH + 18} text-anchor="middle">{lbl}</text>
+    ))}
+
+    {series.map((s) => {
+      const points = s.values.map((v, i) => `${xFor(i)},${yFor(v)}`).join(' ');
+      return (
+        <>
+          <polyline class={`chart-line ${s.colorClass}`} points={points} />
+          {s.values.map((v, i) => (
+            <>
+              <circle class={`chart-dot ${s.colorClass}`} cx={xFor(i)} cy={yFor(v)} r="4">
+                <title>{`${s.name} — ${xLabels[i]}: ${fmt(v)}${unit}`}</title>
+              </circle>
+              {(i === 0 || i === s.values.length - 1) && (
+                <text class="chart-bar-label" x={xFor(i)} y={yFor(v) - 10}>{fmt(v)}{unit}</text>
+              )}
+            </>
+          ))}
+        </>
+      );
+    })}
+  </svg>
+</div>

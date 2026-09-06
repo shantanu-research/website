@@ -56,6 +56,20 @@
           ["Mean thrust", "0.2254", "0.2078", "7.8%"]
         ]
       },
+      "chart": {
+        "type": "bar",
+        "caption": "LSTM's RMSE improvement over the ARIMA(1,0,1) baseline",
+        "unit": "%",
+        "categories": ["Bed start temp.", "Peak chamber P", "Mean thrust"],
+        "series": [
+          { "name": "RMSE improvement", "colorClass": "s1", "values": [61.1, 4.9, 7.8] }
+        ]
+      },
+      "dataset": [
+        { "label": "600 pulses", "value": "Lognormal duty-cycle dataset" },
+        { "label": "400 pulses", "value": "Uniform duty-cycle dataset" },
+        { "label": "16 figures", "value": "PNG @300 DPI + SVG, regenerable" }
+      ],
       "findings": [
         "Bed start temperature is where the LSTM earns its keep — 61.1% RMSE improvement over ARIMA, because soak-back drift between pulses is a nonlinear, state-dependent effect a linear ARIMA model can't capture.",
         "Mean thrust and peak chamber pressure are only mildly improved by the LSTM (4.9–7.8%) — these are closer to stationary, weakly-drifting series where ARIMA is already competitive.",
@@ -88,6 +102,20 @@
           ["TBRF", "0.0616", "0.1807 (better)", "0% of points"]
         ]
       },
+      "chart": {
+        "type": "bar",
+        "caption": "RMSE: in-distribution validation vs. out-of-distribution NASAHUMP test",
+        "categories": ["TBNN", "TBRF"],
+        "series": [
+          { "name": "Validation RMSE", "colorClass": "s1", "values": [0.0532, 0.0616] },
+          { "name": "NASAHUMP RMSE (OOD)", "colorClass": "s2", "values": [0.2383, 0.1807] }
+        ]
+      },
+      "dataset": [
+        { "label": "PHLL29", "value": "Training set — periodic-hills flow family" },
+        { "label": "NASAHUMP", "value": "Held-out OOD test — NASA wall-mounted hump" },
+        { "label": "26 figures, 30 panels", "value": "Publication-quality graphical catalog" }
+      ],
       "findings": [
         "The two architectures invert their ordering between validation and generalization: TBNN wins in-distribution, but TBRF is clearly superior out-of-distribution (signed-rank test across 5 seeds, p = 0.0). The random forest's depth-limited, bootstrap-averaged structure acts as an inductive bias against the aggressive extrapolation neural networks perform off-manifold.",
         "TBRF never violates the Lumley-triangle realizability bounds — its piecewise-constant, convex-combination output can never leave the convex hull of physically admissible training states. TBNN violates realizability on ~1.19% of test points, concentrated in the separation bubble where extrapolation is most aggressive.",
@@ -142,6 +170,11 @@
       "overview": [
         "Chandrayaan-2's orbiter carries three optical payloads that are almost impossible to directly compare: OHRC (~0.25–0.3 m/px, narrow 3 km strips), TMC-2 (5 m/px, near-global stereo triplets), and IIRS (~80 m/px, 250+ band hyperspectral). SIH26166 asks for pixel-accurate correspondence between them despite 20–300× scale differences, sun-angle-dependent shadow shifts (acute near the lunar south pole, where Sun elevation is often under 5°), and lunar terrain so texturally repetitive that naive keypoint matchers produce false positives at scale.",
         "The toolkit builds a feature-matching pipeline (SIFT and AKAZE, with CLAHE and gradient-magnitude preprocessing variants, an 8-way dihedral transform search, and RANSAC affine estimation) and validates it two ways before trusting it on real data: a synthetic ground-truth test that warps a strip by a known random affine transform and checks recovery within tolerance, and a negative control that confirms two non-overlapping crops of the same strip do not falsely match."
+      ],
+      "dataset": [
+        { "label": "4 product IDs", "value": "Real OHRC passes from ISRO's PRADAN archive" },
+        { "label": "~0.25–0.3 m/px", "value": "OHRC native resolution, ~3 km strip swath" },
+        { "label": "20–300×", "value": "Scale gap spanned across OHRC / TMC-2 / IIRS" }
       ],
       "findings": [
         "Real OHRC pass pairs were pulled from ISRO's PRADAN archive (four product IDs spanning different acquisition passes) to stress-test the matcher against genuine sun-angle and cross-pass variation, not just synthetic warps.",
@@ -220,6 +253,14 @@
           ["MP5 — Foundational algorithms", "Next milestone", "Planned", "—"]
         ]
       },
+      "chart": {
+        "type": "bar",
+        "caption": "Tests passing per completed milestone",
+        "categories": ["MP1", "MP2", "MP3", "MP4"],
+        "series": [
+          { "name": "Tests passing", "colorClass": "s1", "values": [24, 36, 52, 73] }
+        ]
+      },
       "findings": [
         "Every milestone ships its own visualization: a Bloch sphere driven by real ⟨X⟩⟨Y⟩⟨Z⟩ expectation values, GHZ-state amplitude bars with entanglement entropy, an exact-vs-shot-noise measurement histogram showing convergence, and a circuit diagram rendered directly from the IR — not hand-drawn.",
         "MP2's tensor-contraction statevector engine is cross-checked against a dense-matrix ground truth, and MP1's gate math includes oracle tests that activate automatically once Qiskit/QuTiP are installed, without becoming a hard dependency.",
@@ -248,13 +289,31 @@
         "headers": ["Defect radius", "Depth", "Stress conc. Kₜ", "FOS @ 1400°C"],
         "rows": [
           ["0.2 mm", "Mid-wall", "1.000", "2.47"],
+          ["0.5 mm", "Mid-wall", "0.997", "2.48"],
           ["1.0 mm", "Mid-wall", "1.061", "2.33"],
+          ["1.5 mm", "Mid-wall", "1.127", "2.19"],
           ["2.0 mm", "Mid-wall", "1.216", "2.03"],
           ["0.2 mm", "Near-surface", "1.000", "2.12"],
+          ["0.5 mm", "Near-surface", "0.991", "2.14"],
           ["1.0 mm", "Near-surface", "1.091", "1.94"],
+          ["1.5 mm", "Near-surface", "1.286", "1.65"],
           ["2.0 mm", "Near-surface", "1.638", "1.29 — critical"]
         ]
       },
+      "chart": {
+        "type": "line",
+        "caption": "Factor of safety vs. defect radius at 1400°C",
+        "xLabels": ["0.2 mm", "0.5 mm", "1.0 mm", "1.5 mm", "2.0 mm"],
+        "series": [
+          { "name": "Mid-wall", "colorClass": "s1", "values": [2.47, 2.48, 2.33, 2.19, 2.03] },
+          { "name": "Near-surface", "colorClass": "s2", "values": [2.12, 2.14, 1.94, 1.65, 1.29] }
+        ]
+      },
+      "dataset": [
+        { "label": "10 configurations", "value": "5 defect radii × 2 depths (mid-wall, near-surface)" },
+        { "label": "1400°C", "value": "Operating temperature evaluated for factor of safety" },
+        { "label": "C-103 (Nb-10Hf-1Ti)", "value": "Locked material — full property set in materials/" }
+      ],
       "findings": [
         "The global stress field is dominated by the thermal gradient, not internal pressure — defect geometry only perturbs it locally.",
         "Defect depth amplifies the stress-concentration factor non-linearly: the ratio of near-surface to mid-wall Kₜ grows from 1.00 at 0.2 mm radius to 1.35 at 2.0 mm.",

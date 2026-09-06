@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import projects from '../../../data/projects.json';
+import GroupedBarChart from '../../components/GroupedBarChart.astro';
+import LineChart from '../../components/LineChart.astro';
 
 export function getStaticPaths() {
   return (projects as any[])
@@ -40,6 +42,38 @@ const base = import.meta.env.BASE_URL;
           <div class="section-label-col"><h2 class="label">Overview</h2></div>
           <div class="prose-block" data-reveal>
             {d.overview.map((p: string) => <p>{p}</p>)}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {d.dataset?.length > 0 && (
+      <section>
+        <div class="section-inner">
+          <div class="section-label-col"><h2 class="label">Dataset</h2></div>
+          <div class={`grid-cells cols-${Math.min(d.dataset.length, 3)}`}>
+            {d.dataset.map((s: any) => (
+              <div>
+                <h3>{s.label}</h3>
+                <p style="font-size:0.9rem;color:var(--muted);margin-top:0.5rem;line-height:1.5;">{s.value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {d.chart && (
+      <section>
+        <div class="section-inner">
+          <div class="section-label-col"><h2 class="label">Chart</h2></div>
+          <div>
+            {d.chart.type === 'bar' && (
+              <GroupedBarChart categories={d.chart.categories} series={d.chart.series} caption={d.chart.caption} unit={d.chart.unit} />
+            )}
+            {d.chart.type === 'line' && (
+              <LineChart xLabels={d.chart.xLabels} series={d.chart.series} caption={d.chart.caption} unit={d.chart.unit} />
+            )}
           </div>
         </div>
       </section>

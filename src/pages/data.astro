@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import GroupedBarChart from '../components/GroupedBarChart.astro';
 ---
 <BaseLayout title="Data & Results — VIOT Research" page="data" description="Erosion campaign, EBS lifetime analysis, and Fowler-Nordheim breakdown risk.">
   <div class="container">
@@ -51,6 +52,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </table>
           </div>
           <p style="font-size:0.8rem;color:var(--muted);font-family:var(--font-mono);margin-top:0.75rem;">GNP LEF = Mo erosion / GNP erosion. Values &gt;1 mean GNP reduces erosion. Values &lt;1 for Graphene mean graphene <em>worsens</em> erosion. CV &lt; 0.57% across all 12 cases.</p>
+          <GroupedBarChart
+            caption="Lifetime-extension factor vs. throttle — GNP reduces erosion, graphene worsens it"
+            categories={["TH0", "TH5", "TH10", "TH15"]}
+            series={[
+              { name: "GNP LEF", colorClass: "s1", values: [3.92, 4.23, 2.81, 1.39] },
+              { name: "Graphene LEF", colorClass: "s2", values: [0.37, 0.57, 0.70, 0.85] },
+            ]}
+            unit="×"
+          />
         </div>
       </div>
     </section>
@@ -133,6 +143,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </table>
           </div>
           <p style="font-size:0.8rem;color:var(--muted);font-family:var(--font-mono);margin-top:0.75rem;">NSTAR nominal inter-grid field ≈ 1.9 MV/m. Rim field enhancement β ~2–10 for machined edges, ~70 for sharp nanostructures — can push local field into the 2.3–7.3 MV/m divergence band.</p>
+          <GroupedBarChart
+            caption="Vacuum-breakdown onset field by material — lower is riskier"
+            categories={["Mo", "Graphene", "GNP"]}
+            series={[
+              { name: "Onset field", colorClass: "s1", values: [7.27, 4.01, 2.26] },
+            ]}
+            unit=" MV/m"
+          />
         </div>
       </div>
     </section>

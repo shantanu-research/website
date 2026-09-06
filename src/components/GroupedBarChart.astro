@@ -1,0 +1,90 @@
+---
+interface Series {
+  name: string;
+  values: number[];
+  colorClass: 's1' | 's2';
+}
+interface Props {
+  categories: string[];
+  series: Series[];
+  caption?: string;
+  unit?: string;
+  height?: number;
+}
+const { categories, series, caption, unit = '', height = 240 } = Astro.props;
+
+const W = 640;
+const H = height;
+const padL = 44;
+const padR = 12;
+const padT = 24;
+const padB = 32;
+const plotW = W - padL - padR;
+const plotH = H - padT - padB;
+
+const allValues = series.flatMap((s) => s.values);
+const maxVal = Math.max(...allValues) * 1.18;
+const groupW = plotW / categories.length;
+const barGap = 6;
+const barW = (groupW - barGap * (series.length + 1)) / series.length;
+
+function yFor(v: number) {
+  return padT + plotH - (v / maxVal) * plotH;
+}
+function fmt(v: number) {
+  if (Math.abs(v) >= 1000) return v.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  if (Number.isInteger(v)) return String(v);
+  return v.toFixed(2);
+}
+
+const gridSteps = 4;
+const gridLines = Array.from({ length: gridSteps + 1 }, (_, i) => {
+  const v = (maxVal / gridSteps) * i;
+  return { y: yFor(v), label: fmt(v) };
+});
+---
+<div class="chart-wrap">
+  {caption && <p class="chart-caption">{caption}</p>}
+  {series.length > 1 && (
+    <div class="chart-legend">
+      {series.map((s) => (
+        <span class="chart-legend-item">
+          <span class={`chart-legend-swatch ${s.colorClass}`}></span>
+          {s.name}
+        </span>
+      ))}
+    </div>
+  )}
+  <svg class="chart-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={caption}>
+    {gridLines.map((g) => (
+      <>
+        <line class="chart-grid-line" x1={padL} x2={W - padR} y1={g.y} y2={g.y} />
+        <text class="chart-tick" x={padL - 8} y={g.y + 3} text-anchor="end">{g.label}</text>
+      </>
+    ))}
+    <line class="chart-axis" x1={padL} x2={W - padR} y1={padT + plotH} y2={padT + plotH} />
+
+    {categories.map((cat, ci) => {
+      const groupX = padL + ci * groupW;
+      return (
+        <>
+          {series.map((s, si) => {
+            const v = s.values[ci];
+            const x = groupX + barGap + si * (barW + barGap);
+            const y = yFor(v);
+            const h = padT + plotH - y;
+            return (
+              <>
+                <rect class={`chart-bar ${s.colorClass}`} x={x} y={y} width={barW} height={h}>
+                  <title>{`${s.name} — ${cat}: ${fmt(v)}${unit}`}</title>
+                </rect>
+                <text class="chart-bar-label" x={x + barW / 2} y={y - 6}>{fmt(v)}{unit}</text>
+              </>
+            );
+          })}
+          <text class="chart-tick" x={groupX + groupW / 2} y={padT + plotH + 18} text-anchor="middle">{cat}</text>
+        </>
+      );
+    })}
+  </svg>
+</div>
