@@ -9,13 +9,13 @@ function withBase(href: string) {
 
 const published = (projects as any[]).filter((p) => p.published);
 ---
-<BaseLayout title="Projects — VIOT Research" page="projects" description="Research software, simulations, and engineering projects.">
+<BaseLayout title="Projects — Shantanu Pawar" page="projects" description="Research software, simulations, and engineering projects.">
   <div class="container">
     <section class="hero">
       <p class="hero-eyebrow">Portfolio</p>
       <h1>Projects</h1>
       <p class="hero-sub">
-        Simulation frameworks, research tooling, and engineering coursework — beyond the VIOT program above.
+        The full index — simulation frameworks, research programs, and engineering coursework.
       </p>
     </section>
 
@@ -24,10 +24,13 @@ const published = (projects as any[]).filter((p) => p.published);
         {published.map((p, i) => {
           const primaryHref = p.links?.detail
             ? withBase(p.links.detail)
-            : p.links?.repo || p.links?.demo || p.links?.paper || null;
-          const Tag = primaryHref ? 'a' : 'div';
+            : p.links?.repo || p.links?.demo || p.links?.paper || undefined;
+          const isExternal = typeof primaryHref === 'string' && primaryHref.startsWith('http');
+          const target = isExternal ? '_blank' : undefined;
+          const rel = isExternal ? 'noopener noreferrer' : undefined;
           return (
-            <Tag class="project-card" data-anime-item href={primaryHref} {...(primaryHref && primaryHref.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+            <div class="project-card" data-anime-item>
+              {primaryHref && <a class="project-card-stretched-link" href={primaryHref} target={target} rel={rel} aria-label={p.title}></a>}
               <span class="project-card-mark">{String(i + 1).padStart(2, '0')}</span>
               <h3>{p.title}</h3>
               <p>{p.description}</p>
@@ -45,7 +48,7 @@ const published = (projects as any[]).filter((p) => p.published);
                 </div>
               )}
               {p.tech?.length > 0 && <div class="project-card-tech">{p.tech.join(' · ')}</div>}
-            </Tag>
+            </div>
           );
         })}
       </div>

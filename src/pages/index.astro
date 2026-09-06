@@ -42,8 +42,9 @@ const published = (allProjects as any[]).filter((p) => p.published);
               const href = p.links?.detail
                 ? (p.links.detail.startsWith('/') ? `${base}${p.links.detail.slice(1)}` : p.links.detail)
                 : (p.links?.repo || `${base}projects/`);
+              const isExternal = href.startsWith('http');
               return (
-                <a class="project-card" data-anime-item href={href} {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                <a class="project-card" data-anime-item href={href} target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}>
                   <span class="project-card-mark">{String(i + 1).padStart(2, '0')}</span>
                   <h3>{p.title}</h3>
                   <p>{p.description}</p>

@@ -767,6 +767,7 @@ footer {
   border: var(--border);
 }
 .project-card {
+  position: relative;
   background: var(--bg);
   padding: 2rem;
   display: flex;
@@ -776,7 +777,12 @@ footer {
   color: inherit;
   transition: background 0.15s;
 }
-a.project-card:hover { background: var(--surface); }
+.project-card:has(.project-card-stretched-link):hover { background: var(--surface); }
+.project-card-stretched-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
 .project-card-mark {
   font-family: var(--font-display);
   font-size: 1.8rem;
@@ -808,7 +814,7 @@ a.project-card:hover { background: var(--surface); }
   padding-top: 1rem;
   border-top: var(--border);
 }
-.project-card-links { display: flex; gap: 1.25rem; margin-top: -0.5rem; }
+.project-card-links { display: flex; gap: 1.25rem; margin-top: -0.5rem; position: relative; z-index: 2; }
 .project-card-links a {
   font-family: var(--font-mono);
   font-size: var(--size-label);
