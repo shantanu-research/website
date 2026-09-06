@@ -18,11 +18,51 @@
     "title": "Time-Series Modeling of Pulsed-Mode N₂O RCS Thrusters",
     "description": "A five-phase computational study for ICAETM 2026: a lumped-parameter physics model of catalytic N₂O decomposition, statistical characterization of the resulting pulse-train time series, and an LSTM predictive model benchmarked against an ARIMA baseline.",
     "tags": ["Propulsion", "Time-Series ML"],
-    "tech": ["Python", "LSTM", "ARIMA"],
+    "tech": ["Python", "LSTM", "ARIMA", "Mann-Kendall", "ADF"],
     "status": "In progress — ICAETM 2026 submission",
-    "links": {},
+    "links": { "detail": "/projects/n2o-rcs-icaetm/" },
     "thumbnail": null,
-    "published": true
+    "published": true,
+    "detail": {
+      "tagline": "A lumped-parameter physics model of a pulsed nitrous-oxide monopropellant thruster, turned into a time series, characterized statistically, and forecast with an LSTM.",
+      "overview": [
+        "Pulsed-mode N₂O monopropellant reaction-control thrusters fire in short duty-cycle bursts, and each pulse leaves thermal state (catalyst-bed temperature, chamber soak-back) behind for the next one. This project builds a lumped-parameter physics model of catalytic N₂O decomposition, drives it through a realistic pulse-train duty cycle, and treats the resulting per-pulse impulse-bit / chamber / bed measurements as a time series rather than a set of independent samples.",
+        "The pipeline is five layers deep: a physics model of a single pulse, a pulse-train generator that carries thermal state forward between pulses (soak-back), a statistical characterization pass (drift, periodicity, stationarity), predictive models benchmarked against a classical baseline, and a six-figure, paper-quality visualization suite."
+      ],
+      "pipeline": [
+        { "step": "0 · Literature grounding", "body": "Real parameter ranges for N₂O monopropellant thrusters, encoded as defaults in config.py." },
+        { "step": "1 · Physics model", "body": "Lumped-parameter single-pulse model of chamber pressure, chamber temperature, and catalyst-bed temperature." },
+        { "step": "2 · Pulse-train time series", "body": "A duty-cycle engine fires a pulse train and carries thermal state forward between pulses (soak-back), producing 600 lognormal-spaced and 400 uniform-spaced pulse datasets." },
+        { "step": "3 · Time-series characterization", "body": "Drift, Mann-Kendall trend test, Augmented Dickey-Fuller stationarity, autocorrelation, and FFT spectral analysis on every feature." },
+        { "step": "4 · Predictive models", "body": "An LSTM forecaster evaluated out-of-sample against a classical ARIMA(1,0,1) baseline on RMSE/MAE." },
+        { "step": "5 · Visualization suite", "body": "16 paper-quality figures (PNG @300 DPI + matching SVG) plus a graphical abstract and animations." }
+      ],
+      "resultsTable": {
+        "caption": "Time-series characterization — 600-pulse dataset",
+        "headers": ["Feature", "Trend (Mann-Kendall)", "Kendall τ", "Trend p", "Stationary (level)"],
+        "rows": [
+          ["Mean thrust", "Increasing", "0.20", "0.0", "True"],
+          ["Peak chamber pressure", "Increasing", "0.195", "0.0", "True"],
+          ["Bed start temperature", "Increasing", "0.51", "0.0", "True"],
+          ["Minimum impulse bit (MIB)", "No trend", "0.019", "0.494", "True"]
+        ]
+      },
+      "resultsTable2": {
+        "caption": "LSTM vs. ARIMA(1,0,1) out-of-sample forecast error",
+        "headers": ["Target", "ARIMA RMSE", "LSTM RMSE", "RMSE improvement"],
+        "rows": [
+          ["Bed start temperature", "2.0298", "0.7892", "61.1%"],
+          ["Peak chamber pressure", "15214.3", "14463.1", "4.9%"],
+          ["Mean thrust", "0.2254", "0.2078", "7.8%"]
+        ]
+      },
+      "findings": [
+        "Bed start temperature is where the LSTM earns its keep — 61.1% RMSE improvement over ARIMA, because soak-back drift between pulses is a nonlinear, state-dependent effect a linear ARIMA model can't capture.",
+        "Mean thrust and peak chamber pressure are only mildly improved by the LSTM (4.9–7.8%) — these are closer to stationary, weakly-drifting series where ARIMA is already competitive.",
+        "All four characterized features are stationary in levels (ADF), and three of four show a statistically significant increasing drift (Mann-Kendall p = 0.0) — consistent with progressive catalyst-bed thermal loading across a 600-pulse duty cycle.",
+        "Every dataset, table, and figure in the repo is regenerable from the analysis/ CLI suite with a fixed random seed."
+      ]
+    }
   },
   {
     "id": "turbulence-closure-icmai",
@@ -31,31 +71,84 @@
     "tags": ["Machine Learning", "CFD", "Turbulence Modeling"],
     "tech": ["Python", "TBNN", "TBRF", "SHAP"],
     "status": "In progress — ICMAI-MAC 2026",
-    "links": {},
+    "links": { "detail": "/projects/turbulence-closure-icmai/" },
     "thumbnail": null,
-    "published": true
+    "published": true,
+    "detail": {
+      "tagline": "Two machine-learned RANS turbulence closures, trained on periodic hills and tested — out of distribution — on a NASA benchmark, explained with SHAP.",
+      "overview": [
+        "The Reynolds-averaged Navier–Stokes equations are unclosed: they require a model for the Reynolds-stress anisotropy tensor. Pope's (1975) tensor-basis formulation writes that tensor as a linear combination of ten invariant basis functions, with the combination weights left as scalar functions of five flow-state invariants — exactly the shape a Tensor Basis Neural Network (Ling et al., 2016) or Tensor Basis Random Forest (Kaandorp & Dwight, 2020) can learn.",
+        "This thesis trains both architectures with a matched 50-trial Bayesian-optimization budget and a 5-seed protocol, exclusively on a family of flow over periodic hills (PHLL29), then evaluates both — without any retraining — on the held-out, out-of-distribution NASA wall-mounted hump (NASAHUMP) benchmark. The central methodological contribution is a spatially- and state-resolved SHAP (SHapley Additive exPlanations) attribution of each model's closure decision, projected onto both the classical Lumley barycentric triangle and the Wnek et al. (2025) polar invariant map."
+      ],
+      "resultsTable": {
+        "caption": "Validation (in-distribution) vs. generalization (NASAHUMP, out-of-distribution)",
+        "headers": ["Model", "Validation RMSE", "NASAHUMP RMSE", "Realizability violations"],
+        "rows": [
+          ["TBNN", "0.0532 (better)", "0.2383", "~1.19% of points"],
+          ["TBRF", "0.0616", "0.1807 (better)", "0% of points"]
+        ]
+      },
+      "findings": [
+        "The two architectures invert their ordering between validation and generalization: TBNN wins in-distribution, but TBRF is clearly superior out-of-distribution (signed-rank test across 5 seeds, p = 0.0). The random forest's depth-limited, bootstrap-averaged structure acts as an inductive bias against the aggressive extrapolation neural networks perform off-manifold.",
+        "TBRF never violates the Lumley-triangle realizability bounds — its piecewise-constant, convex-combination output can never leave the convex hull of physically admissible training states. TBNN violates realizability on ~1.19% of test points, concentrated in the separation bubble where extrapolation is most aggressive.",
+        "TBNN is also the only model with meaningful cross-seed variance (concentrated in the recirculation region); TBRF is statistically near-deterministic (cross-seed RMSE std 6.7×10⁻⁵).",
+        "SHAP attribution shows the two models are locally attending to different physical mechanisms: TBRF concentrates on invariants I1/I2 (strain and rotation magnitude) at the separation bubble, while TBNN spreads weight onto the higher-order I3–I5 invariants with a fatter attribution tail — and the TBNN's error hot-spots co-locate almost exactly with where its SHAP attribution diverges from TBRF's.",
+        "26-figure publication-quality graphical catalog (30 rendered panels), full metric tables, and per-figure interpretation are documented in the thesis."
+      ]
+    }
   },
   {
     "id": "smart-ambulance-gateway",
     "title": "Smart Ambulance Device-Interoperability Gateway",
     "description": "A working connected-ambulance prototype: auto-detects BLE medical-device protocols, prioritizes vital-sign data under bandwidth loss, stores-and-forwards offline, and normalizes telemetry into FHIR-style JSON for a hospital triage dashboard.",
     "tags": ["IoT", "Embedded Systems", "Healthcare"],
-    "tech": ["Python", "BLE", "ESP32", "FHIR"],
-    "status": "Working prototype",
-    "links": {},
+    "tech": ["Python", "BLE", "ESP32", "FHIR", "C++"],
+    "status": "Working prototype — verified end-to-end demo",
+    "links": { "detail": "/projects/smart-ambulance-gateway/" },
     "thumbnail": null,
-    "published": true
+    "published": true,
+    "detail": {
+      "tagline": "An ESP32 edge gateway that auto-detects medical-device protocols with zero manual configuration, and decides what survives a bandwidth drop.",
+      "overview": [
+        "Built for an Indian engineering PBL course (ME305, Pune Vidyarthi Griha COE) around a patent-oriented claim: auto-detecting a connected medical device's protocol without manual configuration, and prioritizing which data streams survive a bandwidth drop. The system has three clearly separated interfaces — a laptop-side Project Command Center for creating patients and injecting clinical/network scenarios, background Python simulators that generate realistic BLE GATT telemetry for three real Health Device Profiles, and a Hospital Triage Dashboard served either from the ESP32 itself or locally.",
+        "The ESP32 parses `GATT_SVC:<uuid>` discovery lines and fixed-size binary frames over TCP or USB serial, normalizes readings into FHIR-style JSON observations with real LOINC codes, and applies offline-resilient store-and-forward with bandwidth-adaptive prioritization: waveform data drops first, then vitals, alerts survive last."
+      ],
+      "architecture": [
+        { "stage": "Medical devices (simulated)", "status": "Implemented", "detail": "Real BLE GATT profiles: Heart Rate (0x180D), Pulse Oximeter (0x1822), Blood Pressure (0x1810)." },
+        { "stage": "Edge gateway — auto-detect + parse", "status": "Implemented", "detail": "ESP32 firmware + a Python software mirror, both parsing the same wire protocol." },
+        { "stage": "Normalization (FHIR-style, LOINC)", "status": "Implemented", "detail": "Maps raw readings to observations with real LOINC codes (8867-4, 59408-5, 8480-6, 8462-4, 9279-1) and evaluates alert thresholds." },
+        { "stage": "Transmission — store-and-forward", "status": "Implemented (simulated egress)", "detail": "Priority queue drops waveform → vitals → alert in that order when full; \"transmits\" via a logged TX event with a 5% simulated failure rate." },
+        { "stage": "Hospital dashboard", "status": "Implemented", "detail": "Two renderings: embedded HTML served directly from the ESP32, and a FastAPI-rendered local copy." }
+      ],
+      "findings": [
+        "A full end-to-end demo was verified on 2026-08-29: a patient created in the Command Center → simulators streamed live GATT telemetry over the LAN → the ESP32 parsed, normalized, and evaluated alerts → the dashboard reflected live values, with an injected tachycardia scenario correctly flashing a critical alert.",
+        "The ESP32 firmware includes a hand-rolled captive-portal Wi-Fi provisioning flow: it joins a saved network on boot, or falls back to its own access point with a `/setup` page.",
+        "The one gap from a production system: transmission to a hospital backend is currently simulated (a logged TX event), not a real HTTP egress — everything upstream of that (detection, parsing, normalization, prioritization, dashboard) runs on real hardware."
+      ]
+    }
   },
   {
     "id": "sih-ohrc-toolkit",
     "title": "Chandrayaan-2 OHRC Lunar Imagery Toolkit",
     "description": "A Smart India Hackathon entry (SIH26166) building image co-registration, calibration, and matching tools for Chandrayaan-2 Orbiter High Resolution Camera (OHRC) lunar surface imagery from ISRO's PRADAN archive.",
     "tags": ["Remote Sensing", "Computer Vision", "Space"],
-    "tech": ["Python"],
-    "status": "Hackathon build",
-    "links": {},
+    "tech": ["Python", "OpenCV", "SIFT", "AKAZE", "RANSAC"],
+    "status": "Hackathon build — SIH26166",
+    "links": { "detail": "/projects/sih-ohrc-toolkit/" },
     "thumbnail": null,
-    "published": true
+    "published": true,
+    "detail": {
+      "tagline": "Pixel-accurate correspondence across three lunar imaging payloads that never see the Moon the same way — 20–300× scale gaps, shifting shadows, near-featureless terrain.",
+      "overview": [
+        "Chandrayaan-2's orbiter carries three optical payloads that are almost impossible to directly compare: OHRC (~0.25–0.3 m/px, narrow 3 km strips), TMC-2 (5 m/px, near-global stereo triplets), and IIRS (~80 m/px, 250+ band hyperspectral). SIH26166 asks for pixel-accurate correspondence between them despite 20–300× scale differences, sun-angle-dependent shadow shifts (acute near the lunar south pole, where Sun elevation is often under 5°), and lunar terrain so texturally repetitive that naive keypoint matchers produce false positives at scale.",
+        "The toolkit builds a feature-matching pipeline (SIFT and AKAZE, with CLAHE and gradient-magnitude preprocessing variants, an 8-way dihedral transform search, and RANSAC affine estimation) and validates it two ways before trusting it on real data: a synthetic ground-truth test that warps a strip by a known random affine transform and checks recovery within tolerance, and a negative control that confirms two non-overlapping crops of the same strip do not falsely match."
+      ],
+      "findings": [
+        "Real OHRC pass pairs were pulled from ISRO's PRADAN archive (four product IDs spanning different acquisition passes) to stress-test the matcher against genuine sun-angle and cross-pass variation, not just synthetic warps.",
+        "A dedicated experiment battery searches the matcher-configuration space (raw / CLAHE / gradient-magnitude preprocessing × SIFT / AKAZE × dihedral orientation search) to find which configuration survives real cross-pass sun-angle pairs, rather than assuming one setting works everywhere.",
+        "The validation harness explicitly separates two different failure modes that matter for a hackathon judge: recoverability (does the matcher find the right known transform?) and specificity (does it correctly refuse to match unrelated crops?) — both are required for a registration tool to be trustworthy on sparse, ambiguous lunar imagery."
+      ]
+    }
   },
   {
     "id": "aerospace-multiphysics-pipeline",
@@ -63,10 +156,42 @@
     "description": "A GPU-accelerated multiphysics pipeline for NSTAR ion thruster plasma simulation — charge-exchange kinetics through WarpX PIC to Fowler–Nordheim field-emission risk assessment, comparing Molybdenum against GNP coatings.",
     "tags": ["Plasma Physics", "HPC", "Electric Propulsion"],
     "tech": ["Python", "WarpX", "PlasmaPy", "CUDA"],
-    "status": "Design stage",
-    "links": {},
+    "status": "Physics + orchestration implemented — GPU PIC runs pending",
+    "links": { "detail": "/projects/aerospace-multiphysics-pipeline/" },
     "thumbnail": null,
-    "published": true
+    "published": true,
+    "detail": {
+      "tagline": "A five-stage GPU pipeline chaining charge-exchange kinetics to a full WarpX Particle-in-Cell simulation of the NSTAR gridded ion thruster, tuned to survive an 8 GB laptop GPU.",
+      "overview": [
+        "NSTAR's accelerator grid is bombarded by slow charge-exchange (CEX) ions born inside its own accelerating field. This pipeline chains five physics stages — Rapp-Francis CEX and Lotz ionisation cross sections, plasma parameter estimation (Debye length, plasma frequency), a Monte Carlo Collision pre-flight beam-loss estimate to sanity-check settings before committing GPU time, a full WarpX GPU Particle-in-Cell simulation, and a Fowler-Nordheim field-emission risk atlas — to compare a baseline Molybdenum accelerator grid against a Graphene Nanoplatelet (GNP) coating.",
+        "The whole pipeline is tuned around one hard constraint: an 8 GB RTX 4060 laptop GPU. Getting WarpX to not OOM-kill on that budget required deliberate departures from the stock configuration — documented as a before/after table so the reasoning survives the next person who touches it."
+      ],
+      "resultsTable": {
+        "caption": "GPU-memory fixes for an 8 GB RTX 4060 (vs. stock WarpX defaults)",
+        "headers": ["Setting", "Stock value", "Fixed value", "Why"],
+        "rows": [
+          ["current_deposition", "esirkepov", "direct", "Esirkepov on a periodic grid needs 602×602 guard cells → OOM; direct keeps guard cells at 2×2"],
+          ["Grid resolution", "48×64", "96×128", "Both dimensions divisible by 32 for CUDA warp-aligned, coalesced memory access"],
+          ["AMREX_GPU_ARENA_SIZE", "not set", "6 GB", "Explicitly reserves 6 of 8 GB VRAM, leaving 2 GB headroom"],
+          ["Diagnostic fields", "E, B, J, ρ", "E, B, ρ", "Dropping the current-density field halves diagnostic write memory"],
+          ["warpx.use_filter", "on", "off", "Disabling the field smoother saves roughly 100 MB"]
+        ]
+      },
+      "resultsTable2": {
+        "caption": "Baseline Molybdenum vs. GNP-coated accelerator grid (config/nstar_base.yaml)",
+        "headers": ["Property", "Molybdenum (baseline)", "GNP coating"],
+        "rows": [
+          ["Work function", "4.6 eV", "4.5 eV"],
+          ["Field-enhancement factor β", "1.0", "200.0"],
+          ["Sputter-yield baseline", "1.0", "0.15"]
+        ]
+      },
+      "findings": [
+        "Kinetics, plasma-parameter, and Fowler-Nordheim atlas math are implemented and unit-tested (three Windows-safe test suites covering cross sections, MCC beam-loss estimate, and PICMI-config translation) — all runnable without a GPU or WSL2.",
+        "The full GPU PIC production run requires WSL2 with a CUDA-enabled WarpX build; a one-shot setup script and a documented `.wslconfig` (12 GB RAM, 8 processors, 4 GB swap) make that reproducible.",
+        "The GNP coating's 200× higher field-enhancement factor is the project's open question carried over from VIOT: it should dramatically raise local field emission risk even as its lower sputter yield reduces erosion — the same GNP trade-off VIOT's ion-optics testbed characterizes independently at the atomistic scale."
+      ]
+    }
   },
   {
     "id": "qsim-studio",
@@ -74,10 +199,33 @@
     "description": "A from-scratch, GPU-accelerated quantum computing simulator and visualization platform — statevectors, gates, measurement, and a circuit IR with QASM-2 support, built without external quantum libraries.",
     "tags": ["Quantum Computing", "GPU Computing"],
     "tech": ["Python", "NumPy", "CuPy"],
-    "status": "Active",
-    "links": {},
+    "status": "Active — 185 tests passing, MP5 next",
+    "links": { "detail": "/projects/qsim-studio/" },
     "thumbnail": null,
-    "published": true
+    "published": true,
+    "detail": {
+      "tagline": "A quantum computing simulator built from first principles — no Qiskit, no Cirq in the core — with a visualization layer for every milestone.",
+      "overview": [
+        "qsim-studio is a local, GPU-accelerated quantum simulator built module by module against a public roadmap, with the explicit rule that external quantum frameworks (Qiskit, QuTiP) are only ever used inside an isolated validation layer to cross-check the from-scratch implementation — never inside the engine itself. Everything is pure Python plus NumPy/CuPy.",
+        "The build runs milestone-by-milestone: a quantum math engine (linear algebra, gates, single-qubit Bloch representation), a multi-qubit statevector register using tensor-contraction gate application, a measurement and statistics layer (Born-rule sampling, full/partial collapse, expectation values), and a circuit layer with its own intermediate representation, a QASM-2-subset parser/exporter, a gate-fusion optimizer, and an SVG circuit-diagram renderer."
+      ],
+      "resultsTable": {
+        "caption": "Roadmap milestones",
+        "headers": ["Milestone", "Scope", "Status", "Tests"],
+        "rows": [
+          ["MP1 — Quantum math engine", "Linear algebra, gates, single-qubit Bloch sphere", "Done", "24 pass"],
+          ["MP2 — Multi-qubit statevector", "Tensor-contraction gate application, Bell/GHZ states, entanglement entropy", "Done", "36 pass"],
+          ["MP3 — Measurement & statistics", "Born sampling, collapse, expectation values, basis rotation", "Done", "52 pass"],
+          ["MP4 — Circuit layer", "IR, QASM-2 subset, gate-fusion optimizer, SVG renderer", "Done", "73 pass"],
+          ["MP5 — Foundational algorithms", "Next milestone", "Planned", "—"]
+        ]
+      },
+      "findings": [
+        "Every milestone ships its own visualization: a Bloch sphere driven by real ⟨X⟩⟨Y⟩⟨Z⟩ expectation values, GHZ-state amplitude bars with entanglement entropy, an exact-vs-shot-noise measurement histogram showing convergence, and a circuit diagram rendered directly from the IR — not hand-drawn.",
+        "MP2's tensor-contraction statevector engine is cross-checked against a dense-matrix ground truth, and MP1's gate math includes oracle tests that activate automatically once Qiskit/QuTiP are installed, without becoming a hard dependency.",
+        "185 tests pass across the four completed milestones (24 + 36 + 52 + 73) with zero external quantum-library dependency in the core engine."
+      ]
+    }
   },
   {
     "id": "mmm-ansys-runner",
@@ -85,10 +233,35 @@
     "description": "Thermo-structural finite element analysis of a solid rocket motor nozzle throat insert: material selection (C-103), defect sensitivity, and microstructure-informed failure assessment.",
     "tags": ["Structural FEA", "Propulsion"],
     "tech": ["ANSYS Mechanical", "APDL"],
-    "status": "Coursework — ME301",
-    "links": {},
+    "status": "Coursework — ME301, 10-phase structured study",
+    "links": { "detail": "/projects/mmm-ansys-runner/" },
     "thumbnail": null,
-    "published": true
+    "published": true,
+    "detail": {
+      "tagline": "How big a manufacturing void can a rocket-nozzle throat insert tolerate at 1400°C before its factor of safety collapses to 1?",
+      "overview": [
+        "A 10-phase ME301 course study (proposal → material selection → geometry → mesh → loads → baseline solve → defect sensitivity sweep → NDT mapping → microstructure writeup → final report) of a solid rocket motor nozzle throat insert. The material is locked to C-103 (Nb-10Hf-1Ti), a BCC niobium alloy strengthened by solid-solution and precipitation hardening, chosen for retaining useful strength to roughly 1400°C — standard for rocket nozzle throats and re-entry leading edges.",
+        "The central engineering question is defect sensitivity: given that real castings and welds carry small voids, how does void size and depth-from-surface change the local stress-concentration factor and, ultimately, the factor of safety at operating temperature?"
+      ],
+      "resultsTable": {
+        "caption": "Defect sensitivity sweep — stress concentration factor and factor of safety at 1400°C",
+        "headers": ["Defect radius", "Depth", "Stress conc. Kₜ", "FOS @ 1400°C"],
+        "rows": [
+          ["0.2 mm", "Mid-wall", "1.000", "2.47"],
+          ["1.0 mm", "Mid-wall", "1.061", "2.33"],
+          ["2.0 mm", "Mid-wall", "1.216", "2.03"],
+          ["0.2 mm", "Near-surface", "1.000", "2.12"],
+          ["1.0 mm", "Near-surface", "1.091", "1.94"],
+          ["2.0 mm", "Near-surface", "1.638", "1.29 — critical"]
+        ]
+      },
+      "findings": [
+        "The global stress field is dominated by the thermal gradient, not internal pressure — defect geometry only perturbs it locally.",
+        "Defect depth amplifies the stress-concentration factor non-linearly: the ratio of near-surface to mid-wall Kₜ grows from 1.00 at 0.2 mm radius to 1.35 at 2.0 mm.",
+        "A 2 mm near-surface void drives the factor of safety down to 1.29 at 1400°C — close enough to failure (FOS = 1) to be flagged as a critical defect class.",
+        "Practical implication carried into the NDT-mapping phase: near-surface voids larger than 1.5 mm within roughly a quarter wall-thickness of the bore must be reliably detectable by non-destructive testing before flight qualification."
+      ]
+    }
   },
   {
     "id": "profnet",
@@ -98,10 +271,23 @@
     "tech": ["Next.js", "React", "Prisma", "SQLite", "Electron"],
     "status": "Active",
     "links": {
+      "detail": "/projects/profnet/",
       "repo": "https://github.com/chiku149/profnet"
     },
     "thumbnail": null,
-    "published": true
+    "published": true,
+    "detail": {
+      "tagline": "A CRM for research relationships — professors, correspondence, collaborations — that never leaves your machine.",
+      "overview": [
+        "Academic outreach and collaboration tracking generates the same relationship-management problem as sales does — who did I contact, when, about what, and what's next — but existing CRMs assume a cloud backend and a company account. ProfNet is local-first by design: SQLite on disk via Prisma (WAL mode), file attachments in a local storage folder, no cloud services, and no API keys, packaged as both a web app and an Electron desktop app.",
+        "A `INVARIANTS.md` document specifies the data-integrity rules the app must never violate, enforced by a Vitest suite that runs directly over the server-action layer — so refactors that would silently corrupt data get caught before they ship."
+      ],
+      "findings": [
+        "Both your database (`prisma/dev.db`) and file attachments (`./storage/`) are gitignored by design — none of your research contacts or notes ever leave your machine via git.",
+        "A one-click Settings → Download backup produces a zip of both paths; restoring is just unzipping over them and restarting the app.",
+        "Ships as a portable Electron build alongside the standard Next.js web app, using dnd-kit for drag-and-drop organization and shadcn/ui + Tailwind for the interface."
+      ]
+    }
   },
   {
     "id": "cfd-learning-series",
@@ -110,9 +296,29 @@
     "tags": ["CFD", "Fluid Dynamics"],
     "tech": ["ANSYS Fluent", "Python"],
     "status": "Active",
-    "links": {},
+    "links": { "detail": "/projects/cfd-learning-series/" },
     "thumbnail": null,
-    "published": true
+    "published": true,
+    "detail": {
+      "tagline": "The full CFD workflow — geometry, meshing, solving, post-processing — taught through three canonical cases of rising complexity.",
+      "overview": [
+        "A self-structured learning project working through the standard CFD pipeline (Geometry → Meshing → Solver Setup → Solve → Post-Processing) in ANSYS Fluent, automated end-to-end with Fluent journal files (`.jou`) so every case is a one-command replay rather than a remembered sequence of GUI clicks.",
+        "Each case README pairs the physics background with step-by-step instructions, building from a simple steady solve to a genuinely unsteady one — the same progression a first CFD course follows, but self-paced and fully scripted."
+      ],
+      "resultsTable": {
+        "caption": "The three cases",
+        "headers": ["Case", "Regime", "Reynolds number", "Steady / Unsteady", "Focus"],
+        "rows": [
+          ["01 — Pipe flow", "2D axisymmetric laminar", "Re = 200", "Steady", "Velocity profiles, pressure drop vs. analytical solution"],
+          ["02 — Cylinder flow", "2D planar laminar", "Re = 100", "Unsteady", "Vortex shedding, drag/lift monitors, transient setup"],
+          ["03 — Channel flow", "2D planar laminar", "Re = 50", "Steady", "Entry length, boundary-layer development, symmetry"]
+        ]
+      },
+      "findings": [
+        "Every case ships a Fluent journal file that automates the full TUI sequence — reading the mesh, setting physics, solving to convergence, and exporting results — so any case reruns identically with one command, headless or in the GUI.",
+        "The three-case progression is deliberately ordered by what changes: case 1 introduces the workflow on the simplest steady laminar solve, case 2 adds the unsteady vortex-shedding regime and force monitors, case 3 returns to steady but shifts focus to boundary-layer and entry-length behavior."
+      ]
+    }
   },
   {
     "id": "sky-strike",
@@ -121,9 +327,18 @@
     "tags": ["Game Dev"],
     "tech": ["C", "Win32 API"],
     "status": "Working build",
-    "links": {},
+    "links": { "detail": "/projects/sky-strike/" },
     "thumbnail": null,
-    "published": false
+    "published": false,
+    "detail": {
+      "tagline": "A retro arcade shooter compiled from a single C file — no engine, no dependencies beyond the Win32 API.",
+      "overview": [
+        "A pixel-art plane shooter built directly against Win32 (GDI for rendering, winmm for audio, dynamically-loaded XInput for gamepad support alongside keyboard controls), compiled with a single `gcc` invocation and no game engine."
+      ],
+      "findings": [
+        "The project ships a working `sky_strike.exe` alongside its source — a `package.json` exists in the folder but is vestigial, since the game itself is pure C."
+      ]
+    }
   },
   {
     "id": "manim-explainers",
@@ -132,8 +347,17 @@
     "tags": ["Education", "Math"],
     "tech": ["Python", "Manim"],
     "status": "Working scenes",
-    "links": {},
+    "links": { "detail": "/projects/manim-explainers/" },
     "thumbnail": null,
-    "published": false
+    "published": false,
+    "detail": {
+      "tagline": "Manim-rendered explainer videos for a linear differential equations coursework unit.",
+      "overview": [
+        "Animated explainer scenes for Unit 1 (Linear Differential Equations and Applications) of a Computational Methods and Analytical Mathematics course, built with Manim and rendered to video."
+      ],
+      "findings": [
+        "Working scene scripts render to the `media/` output folder; the project currently lives loose alongside qsim-studio's parent directory rather than in its own repo."
+      ]
+    }
   }
 ]

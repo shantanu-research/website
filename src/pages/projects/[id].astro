@@ -1,0 +1,195 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import projects from '../../../data/projects.json';
+
+export function getStaticPaths() {
+  return (projects as any[])
+    .filter((p) => p.published && p.id !== 'viot' && p.detail)
+    .map((p) => ({ params: { id: p.id }, props: { project: p } }));
+}
+
+const { project } = Astro.props as { project: any };
+const d = project.detail;
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout title={`${project.title} — Shantanu Pawar`} page="projects" description={project.description}>
+  <div class="container">
+    <section class="hero">
+      <p class="hero-eyebrow">{project.status}</p>
+      <h1>{project.title}</h1>
+      <p class="hero-sub">{d.tagline || project.description}</p>
+
+      {project.tags?.length > 0 && (
+        <div class="tag-row" style="margin-top: 1.5rem;">
+          {project.tags.map((t: string) => <span class="tag-chip">{t}</span>)}
+        </div>
+      )}
+
+      {(project.links?.repo || project.links?.demo || project.links?.paper) && (
+        <div class="btn-row" style="margin-top: 2rem;">
+          {project.links?.repo && <a class="btn-outline" href={project.links.repo} target="_blank" rel="noopener noreferrer">Repository</a>}
+          {project.links?.demo && <a class="btn-outline" href={project.links.demo} target="_blank" rel="noopener noreferrer">Demo</a>}
+          {project.links?.paper && <a class="btn-outline" href={project.links.paper} target="_blank" rel="noopener noreferrer">Paper</a>}
+        </div>
+      )}
+    </section>
+
+    {d.overview?.length > 0 && (
+      <section>
+        <div class="section-inner">
+          <div class="section-label-col"><h2 class="label">Overview</h2></div>
+          <div class="prose-block" data-reveal>
+            {d.overview.map((p: string) => <p>{p}</p>)}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {d.pipeline?.length > 0 && (
+      <section>
+        <div class="section-inner">
+          <div class="section-label-col"><h2 class="label">Pipeline</h2></div>
+          <div class="timeline" data-gsap="timeline">
+            {d.pipeline.map((s: any, i: number) => (
+              <div class="timeline-item">
+                <span class="timeline-num">{String(i).padStart(2, '0')}</span>
+                <div>
+                  <p class="timeline-title">{s.step}</p>
+                  <p class="timeline-body">{s.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {d.architecture?.length > 0 && (
+      <section>
+        <div class="section-inner">
+          <div class="section-label-col"><h2 class="label">Architecture</h2></div>
+          <div class="table-wrap" data-gsap="table">
+            <table>
+              <thead><tr><th>Stage</th><th>Status</th><th>Detail</th></tr></thead>
+              <tbody>
+                {d.architecture.map((a: any) => (
+                  <tr>
+                    <td>{a.stage}</td>
+                    <td class={a.status?.toLowerCase().includes('implemented') ? 'td-navy' : 'td-muted'}>{a.status}</td>
+                    <td>{a.detail}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {d.resultsTable && (
+      <section>
+        <div class="section-inner">
+          <div class="section-label-col"><h2 class="label">Results</h2></div>
+          <div>
+            <p class="label">{d.resultsTable.caption}</p>
+            <div class="table-wrap" data-gsap="table">
+              <table>
+                <thead><tr>{d.resultsTable.headers.map((h: string) => <th>{h}</th>)}</tr></thead>
+                <tbody>
+                  {d.resultsTable.rows.map((row: string[]) => (
+                    <tr>{row.map((cell: string) => <td>{cell}</td>)}</tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {d.resultsTable2 && (
+      <section>
+        <div class="section-inner">
+          <div class="section-label-col"><h2 class="label">Comparison</h2></div>
+          <div>
+            <p class="label">{d.resultsTable2.caption}</p>
+            <div class="table-wrap" data-gsap="table">
+              <table>
+                <thead><tr>{d.resultsTable2.headers.map((h: string) => <th>{h}</th>)}</tr></thead>
+                <tbody>
+                  {d.resultsTable2.rows.map((row: string[]) => (
+                    <tr>{row.map((cell: string) => <td>{cell}</td>)}</tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {d.findings?.length > 0 && (
+      <section>
+        <div class="callout" data-gsap="callout">
+          <p class="accent-label">Key Findings</p>
+          <h2>What the work shows</h2>
+          <div class="findings-list">
+            {d.findings.map((f: string) => <p>{f}</p>)}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <section>
+      <div class="section-inner">
+        <div class="section-label-col"><h2 class="label">Stack</h2></div>
+        <div>
+          {project.tech?.length > 0 && (
+            <div class="tag-row">
+              {project.tech.map((t: string) => <span class="tag-chip">{t}</span>)}
+            </div>
+          )}
+          <div class="btn-row" style="margin-top: 2rem;">
+            <a class="btn-outline" href={`${base}projects/`}>All projects</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    import gsap from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    gsap.registerPlugin(ScrollTrigger);
+
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.utils.toArray('[data-reveal]').forEach((el: any) => {
+        gsap.fromTo(el, { opacity: 0, y: 16 }, {
+          scrollTrigger: { trigger: el, start: 'top 90%' },
+          opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
+        });
+      });
+      gsap.utils.toArray('.timeline-item').forEach((item: any, i: number) => {
+        gsap.fromTo(item, { opacity: 0, x: -24 }, {
+          scrollTrigger: { trigger: item, start: 'top 88%' },
+          opacity: 1, x: 0, duration: 0.5, ease: 'power2.out', delay: i * 0.06,
+        });
+      });
+      document.querySelectorAll('[data-gsap="table"]').forEach((table) => {
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach((row, i) => {
+          gsap.fromTo(row, { opacity: 0, x: -16 }, {
+            scrollTrigger: { trigger: row, start: 'top 90%' },
+            opacity: 1, x: 0, duration: 0.4, ease: 'power2.out', delay: i * 0.05,
+          });
+        });
+      });
+      gsap.utils.toArray('.findings-list p').forEach((p: any, i: number) => {
+        gsap.fromTo(p, { opacity: 0, y: 12 }, {
+          scrollTrigger: { trigger: p, start: 'top 92%' },
+          opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: i * 0.08,
+        });
+      });
+    }
+  </script>
+</BaseLayout>

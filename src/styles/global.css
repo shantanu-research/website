@@ -546,6 +546,20 @@ section {
   margin-top: 1.5rem;
   letter-spacing: -0.01em;
 }
+.findings-list { display: flex; flex-direction: column; gap: 1.25rem; }
+.findings-list p {
+  position: relative;
+  padding-left: 2rem;
+  margin: 0 !important;
+  font-size: 1.05rem !important;
+}
+.findings-list p::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
 /* Scramble chars */
 .callout p .char { display: inline; will-change: contents; }
 @media (max-width: 640px) { .callout { padding: 2rem; } }
