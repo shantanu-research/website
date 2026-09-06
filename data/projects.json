@@ -1,0 +1,95 @@
+[
+  {
+    "id": "viot",
+    "title": "Virtual Ion-Optics Testbed (VIOT)",
+    "description": "A multiscale assessment of carbon-nanomaterial accelerator-grid coatings for charge-exchange erosion mitigation in the NASA NSTAR ion thruster — GPU PIC-MCC plasma simulation, LAMMPS AIREBO molecular dynamics, and custom 3D Poisson/DSMC solvers.",
+    "tags": ["Plasma Physics", "Electric Propulsion", "GPU Computing"],
+    "tech": ["Python", "CUDA", "LAMMPS", "PIC-MCC", "DSMC"],
+    "status": "Active — Phase V",
+    "links": {
+      "detail": "/",
+      "repo": "https://github.com/chiku149/VIOT-Research"
+    },
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "aerospace-multiphysics-pipeline",
+    "title": "AeroSpace Multiphysics Pipeline",
+    "description": "A GPU-accelerated multiphysics pipeline for NSTAR ion thruster plasma simulation — charge-exchange kinetics through WarpX PIC to Fowler–Nordheim field-emission risk assessment, comparing Molybdenum against GNP coatings.",
+    "tags": ["Plasma Physics", "HPC", "Electric Propulsion"],
+    "tech": ["Python", "WarpX", "PlasmaPy", "CUDA"],
+    "status": "Design stage",
+    "links": {},
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "qsim-studio",
+    "title": "qsim-studio",
+    "description": "A from-scratch, GPU-accelerated quantum computing simulator and visualization platform — statevectors, gates, measurement, and a circuit IR with QASM-2 support, built without external quantum libraries.",
+    "tags": ["Quantum Computing", "GPU Computing"],
+    "tech": ["Python", "NumPy", "CuPy"],
+    "status": "Active",
+    "links": {},
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "mmm-ansys-runner",
+    "title": "Rocket Nozzle Throat Insert — Microstructure-Informed FEA",
+    "description": "Thermo-structural finite element analysis of a solid rocket motor nozzle throat insert: material selection (C-103), defect sensitivity, and microstructure-informed failure assessment.",
+    "tags": ["Structural FEA", "Propulsion"],
+    "tech": ["ANSYS Mechanical", "APDL"],
+    "status": "Coursework — ME301",
+    "links": {},
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "profnet",
+    "title": "ProfNet",
+    "description": "A local-first personal CRM for academics — tracks professors, communications, reminders, and collaborations entirely on-device, with no cloud and no API keys.",
+    "tags": ["Software", "Tools"],
+    "tech": ["Next.js", "React", "Prisma", "SQLite", "Electron"],
+    "status": "Active",
+    "links": {
+      "repo": "https://github.com/chiku149/profnet"
+    },
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "cfd-learning-series",
+    "title": "CFD Learning Series",
+    "description": "A structured, beginner-to-intermediate CFD workflow in ANSYS Fluent — geometry through meshing, solving, and post-processing across three canonical cases of increasing complexity.",
+    "tags": ["CFD", "Fluid Dynamics"],
+    "tech": ["ANSYS Fluent", "Python"],
+    "status": "Active",
+    "links": {},
+    "thumbnail": null,
+    "published": true
+  },
+  {
+    "id": "sky-strike",
+    "title": "Sky Strike",
+    "description": "A pixel-art retro plane shooter written as a single C file for native Windows — gamepad and keyboard input, zero game engine.",
+    "tags": ["Game Dev"],
+    "tech": ["C", "Win32 API"],
+    "status": "Working build",
+    "links": {},
+    "thumbnail": null,
+    "published": false
+  },
+  {
+    "id": "manim-explainers",
+    "title": "Manim Explainers",
+    "description": "Animated math explainer videos built with Manim, covering linear differential equations for a computational methods coursework unit.",
+    "tags": ["Education", "Math"],
+    "tech": ["Python", "Manim"],
+    "status": "Working scenes",
+    "links": {},
+    "thumbnail": null,
+    "published": false
+  }
+]

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import profile from '../../data/profile.json';
 ---
 <BaseLayout title="People — VIOT Research" page="about" description="Principal Investigator profile and complete documentation record.">
   <div class="container">
@@ -59,21 +60,37 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <table>
               <thead><tr><th>File</th><th>Contents</th></tr></thead>
               <tbody>
-                <tr><td class="mono text-navy">01_Project_Overview.md</td><td>Research question, H1–H4, scope, timeline</td></tr>
-                <tr><td class="mono text-navy">02_Data_Campaign_Results.md</td><td>36 campaign simulations, raw erosion, LEF derivation</td></tr>
-                <tr><td class="mono text-navy">03_Data_EBS_Analysis.md</td><td>10-seed ensemble, barrier physics, LEF_EBS</td></tr>
-                <tr><td class="mono text-navy">04_Data_Yield_Tables.md</td><td>7 sputter-yield tables, RustBCA + LAMMPS parameters</td></tr>
-                <tr><td class="mono text-navy">05_Data_Neutral_DSMC.md</td><td>Analytic view factor vs DSMC benchmark, 44.4% deviation</td></tr>
-                <tr><td class="mono text-navy">06_Physics_and_Math.md</td><td>Every governing equation, constant, and derivation</td></tr>
-                <tr><td class="mono text-navy">07_Codebase_VIOT3.md</td><td>Axisymmetric framework: modules, API</td></tr>
-                <tr><td class="mono text-navy">08_Codebase_VIOT4.md</td><td>3D framework: DSMC, MD pipeline, 3D Poisson</td></tr>
-                <tr><td class="mono text-navy">09_Verification_and_Tests.md</td><td>70+2 tests, assertions, all results</td></tr>
-                <tr><td class="mono text-navy">10_Results_Summary.md</td><td>Every headline result with its provenance chain</td></tr>
-                <tr><td class="mono text-navy">11_Empirical_Reference_Data.md</td><td>NSTAR ELT data, yields, geometries</td></tr>
-                <tr><td class="mono text-navy">12_Framework_Comparison.md</td><td>VIOT vs. Orbitrap, ONERA</td></tr>
-                <tr><td class="mono text-navy">13-17</td><td>Manuscript history, limitations, reproducibility, references</td></tr>
+                <tr><td class="td-navy">01_Project_Overview.md</td><td>Research question, H1–H4, scope, timeline</td></tr>
+                <tr><td class="td-navy">02_Data_Campaign_Results.md</td><td>36 campaign simulations, raw erosion, LEF derivation</td></tr>
+                <tr><td class="td-navy">03_Data_EBS_Analysis.md</td><td>10-seed ensemble, barrier physics, LEF_EBS</td></tr>
+                <tr><td class="td-navy">04_Data_Yield_Tables.md</td><td>7 sputter-yield tables, RustBCA + LAMMPS parameters</td></tr>
+                <tr><td class="td-navy">05_Data_Neutral_DSMC.md</td><td>Analytic view factor vs DSMC benchmark, 44.4% deviation</td></tr>
+                <tr><td class="td-navy">06_Physics_and_Math.md</td><td>Every governing equation, constant, and derivation</td></tr>
+                <tr><td class="td-navy">07_Codebase_VIOT3.md</td><td>Axisymmetric framework: modules, API</td></tr>
+                <tr><td class="td-navy">08_Codebase_VIOT4.md</td><td>3D framework: DSMC, MD pipeline, 3D Poisson</td></tr>
+                <tr><td class="td-navy">09_Verification_and_Tests.md</td><td>70+2 tests, assertions, all results</td></tr>
+                <tr><td class="td-navy">10_Results_Summary.md</td><td>Every headline result with its provenance chain</td></tr>
+                <tr><td class="td-navy">11_Empirical_Reference_Data.md</td><td>NSTAR ELT data, yields, geometries</td></tr>
+                <tr><td class="td-navy">12_Framework_Comparison.md</td><td>VIOT vs. Orbitrap, ONERA</td></tr>
+                <tr><td class="td-navy">13-17</td><td>Manuscript history, limitations, reproducibility, references</td></tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-inner">
+        <div class="section-label-col"><h2 class="label">Contact</h2></div>
+        <div>
+          <p class="prose-block" style="margin-bottom: 1.5rem;">Open to collaboration, questions about the research, or opportunities in propulsion and computational physics.</p>
+          <div class="btn-row">
+            <a class="btn-outline" href={`mailto:${profile.email}`}>Email</a>
+            {profile.github && <a class="btn-outline" href={profile.github} target="_blank" rel="noopener noreferrer">GitHub</a>}
+            {profile.linkedin && <a class="btn-outline" href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>}
+            {profile.scholar && <a class="btn-outline" href={profile.scholar} target="_blank" rel="noopener noreferrer">Google Scholar</a>}
+            {profile.cv && <a class="btn-outline" href={profile.cv} target="_blank" rel="noopener noreferrer">CV</a>}
           </div>
         </div>
       </div>

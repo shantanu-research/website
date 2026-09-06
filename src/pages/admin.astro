@@ -1,0 +1,426 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const REPO_OWNER = 'chiku149';
+const REPO_NAME = 'aerocore';
+const REPO_BRANCH = 'main';
+const PROJECTS_PATH = 'data/projects.json';
+const PROFILE_PATH = 'data/profile.json';
+---
+<BaseLayout title="Admin — VIOT Research" page="admin" description="Private content admin." noindex={true}>
+  <div class="container" style="max-width: 860px;">
+    <section class="hero" style="padding-bottom: 2rem;">
+      <p class="hero-eyebrow">Private</p>
+      <h1 style="font-size: clamp(2.2rem, 5vw, 3.5rem);">Content admin</h1>
+      <p class="hero-sub">
+        Add, edit, or unpublish projects and contact info. Changes commit straight to
+        <code>{REPO_OWNER}/{REPO_NAME}</code> on <code>{REPO_BRANCH}</code> using a GitHub
+        Personal Access Token — nobody without a token with push access to this repo can write
+        through this page, even if they find the URL. The token is kept only in this browser
+        tab's session storage; it is never sent anywhere except <code>api.github.com</code>, and
+        it's cleared when you close the tab.
+      </p>
+    </section>
+
+    <section style="border-top: none; padding-top: 0;">
+      <div id="admin-status" class="admin-status admin-hidden"></div>
+
+      <div id="connect-panel">
+        <div class="admin-field">
+          <label for="pat-input">GitHub Personal Access Token</label>
+          <input type="password" id="pat-input" autocomplete="off" placeholder="github_pat_… (needs Contents: Read and write on this repo)" />
+        </div>
+        <button type="button" class="btn-outline" id="connect-btn">Connect</button>
+      </div>
+
+      <div id="app-panel" class="admin-hidden">
+        <div class="btn-row" style="margin-bottom: 2.5rem;">
+          <button type="button" class="btn-outline" data-tab-btn="projects">Projects</button>
+          <button type="button" class="btn-outline" data-tab-btn="profile">Contact info</button>
+          <button type="button" class="btn-outline" id="disconnect-btn">Disconnect</button>
+        </div>
+
+        <div data-tab="projects">
+          <h2 class="label">Existing entries</h2>
+          <div id="project-list"></div>
+
+          <h2 class="label" style="margin-top: 2.5rem;">Add / edit project</h2>
+          <form id="project-form">
+            <input type="hidden" id="p-editing-id" value="" />
+            <div class="admin-field">
+              <label for="p-title">Title</label>
+              <input type="text" id="p-title" required />
+            </div>
+            <div class="admin-field">
+              <label for="p-id">Slug / ID (lowercase, hyphens — auto-filled from title)</label>
+              <input type="text" id="p-id" required />
+            </div>
+            <div class="admin-field">
+              <label for="p-description">Description</label>
+              <textarea id="p-description" required></textarea>
+            </div>
+            <div class="admin-field">
+              <label for="p-tags">Tags (comma-separated)</label>
+              <input type="text" id="p-tags" placeholder="Plasma Physics, GPU Computing" />
+            </div>
+            <div class="admin-field">
+              <label for="p-tech">Tech stack (comma-separated)</label>
+              <input type="text" id="p-tech" placeholder="Python, CUDA" />
+            </div>
+            <div class="admin-field">
+              <label for="p-status">Status label</label>
+              <input type="text" id="p-status" placeholder="Active, Design stage, Coursework…" />
+            </div>
+            <div class="admin-field">
+              <label for="p-link-detail">Internal detail link (optional, e.g. /methods/)</label>
+              <input type="text" id="p-link-detail" />
+            </div>
+            <div class="admin-field">
+              <label for="p-link-repo">Repo link (optional)</label>
+              <input type="url" id="p-link-repo" />
+            </div>
+            <div class="admin-field">
+              <label for="p-link-demo">Demo link (optional)</label>
+              <input type="url" id="p-link-demo" />
+            </div>
+            <div class="admin-field">
+              <label for="p-link-paper">Paper link (optional)</label>
+              <input type="url" id="p-link-paper" />
+            </div>
+            <div class="admin-checkbox">
+              <input type="checkbox" id="p-published" />
+              <label for="p-published">Published (visible on the public Projects page)</label>
+            </div>
+            <div class="btn-row">
+              <button type="submit" class="btn-outline btn-outline--accent" id="p-save-btn">Save &amp; commit</button>
+              <button type="button" class="btn-outline" id="p-clear-btn">Clear form</button>
+            </div>
+          </form>
+        </div>
+
+        <div data-tab="profile" class="admin-hidden">
+          <h2 class="label">Contact info</h2>
+          <form id="profile-form">
+            <div class="admin-field">
+              <label for="pr-name">Name</label>
+              <input type="text" id="pr-name" required />
+            </div>
+            <div class="admin-field">
+              <label for="pr-email">Public email</label>
+              <input type="email" id="pr-email" required />
+            </div>
+            <div class="admin-field">
+              <label for="pr-github">GitHub URL</label>
+              <input type="url" id="pr-github" />
+            </div>
+            <div class="admin-field">
+              <label for="pr-linkedin">LinkedIn URL</label>
+              <input type="url" id="pr-linkedin" />
+            </div>
+            <div class="admin-field">
+              <label for="pr-scholar">Google Scholar URL</label>
+              <input type="url" id="pr-scholar" />
+            </div>
+            <div class="admin-field">
+              <label for="pr-cv">CV URL</label>
+              <input type="url" id="pr-cv" />
+            </div>
+            <button type="submit" class="btn-outline btn-outline--accent">Save &amp; commit</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script define:vars={{ REPO_OWNER, REPO_NAME, REPO_BRANCH, PROJECTS_PATH, PROFILE_PATH }}>
+    const API = 'https://api.github.com';
+    const statusEl = document.getElementById('admin-status');
+    const connectPanel = document.getElementById('connect-panel');
+    const appPanel = document.getElementById('app-panel');
+    const patInput = document.getElementById('pat-input');
+
+    let token = null;
+    let projectsSha = null;
+    let projectsData = [];
+    let profileSha = null;
+    let profileData = {};
+
+    function showStatus(msg, kind) {
+      statusEl.textContent = msg;
+      statusEl.className = 'admin-status' + (kind ? ` admin-status--${kind}` : '');
+    }
+    function clearStatus() {
+      statusEl.className = 'admin-status admin-hidden';
+    }
+
+    // UTF-8 safe base64 helpers (GitHub content API is base64-over-UTF8)
+    function toBase64(str) {
+      return btoa(unescape(encodeURIComponent(str)));
+    }
+    function fromBase64(b64) {
+      return decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str == null ? '' : String(str);
+      return div.innerHTML;
+    }
+
+    async function ghFetch(path, options = {}) {
+      const res = await fetch(`${API}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+        ...options,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/vnd.github+json',
+          'Content-Type': 'application/json',
+          'X-GitHub-Api-Version': '2022-11-28',
+          ...(options.headers || {}),
+        },
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(body.message || `GitHub API error (${res.status})`);
+      }
+      return body;
+    }
+
+    async function loadFile(path) {
+      const file = await ghFetch(`${path}?ref=${REPO_BRANCH}`);
+      return { sha: file.sha, data: JSON.parse(fromBase64(file.content)) };
+    }
+
+    async function saveFile(path, sha, data, message) {
+      const body = {
+        message,
+        content: toBase64(JSON.stringify(data, null, 2) + '\n'),
+        branch: REPO_BRANCH,
+      };
+      if (sha) body.sha = sha;
+      const result = await ghFetch(path, { method: 'PUT', body: JSON.stringify(body) });
+      return result.content.sha;
+    }
+
+    function renderProjectList() {
+      const list = document.getElementById('project-list');
+      list.innerHTML = '';
+      if (!projectsData.length) {
+        list.innerHTML = '<p style="color:var(--muted)">No entries yet.</p>';
+        return;
+      }
+      projectsData.forEach((p) => {
+        const item = document.createElement('div');
+        item.className = 'admin-list-item';
+        item.innerHTML = `
+          <div>
+            <h4>${escapeHtml(p.title)} ${p.published ? '' : '<span class="admin-badge-draft">DRAFT</span>'}</h4>
+            <p>${escapeHtml(p.description)}</p>
+          </div>
+          <div class="admin-list-actions">
+            <button type="button" data-action="edit">Edit</button>
+            <button type="button" data-action="toggle">${p.published ? 'Unpublish' : 'Publish'}</button>
+            <button type="button" data-action="delete">Delete</button>
+          </div>
+        `;
+        item.querySelector('[data-action="edit"]').addEventListener('click', () => fillForm(p));
+        item.querySelector('[data-action="toggle"]').addEventListener('click', () => togglePublish(p.id));
+        item.querySelector('[data-action="delete"]').addEventListener('click', () => deleteProject(p.id));
+        list.appendChild(item);
+      });
+    }
+
+    function fillForm(p) {
+      document.getElementById('p-editing-id').value = p.id;
+      document.getElementById('p-title').value = p.title || '';
+      document.getElementById('p-id').value = p.id || '';
+      document.getElementById('p-description').value = p.description || '';
+      document.getElementById('p-tags').value = (p.tags || []).join(', ');
+      document.getElementById('p-tech').value = (p.tech || []).join(', ');
+      document.getElementById('p-status').value = p.status || '';
+      document.getElementById('p-link-detail').value = p.links?.detail || '';
+      document.getElementById('p-link-repo').value = p.links?.repo || '';
+      document.getElementById('p-link-demo').value = p.links?.demo || '';
+      document.getElementById('p-link-paper').value = p.links?.paper || '';
+      document.getElementById('p-published').checked = !!p.published;
+      window.scrollTo({ top: document.getElementById('project-form').offsetTop - 100, behavior: 'smooth' });
+    }
+
+    function clearForm() {
+      document.getElementById('project-form').reset();
+      document.getElementById('p-editing-id').value = '';
+    }
+
+    function slugify(s) {
+      return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    async function commitProjects(message) {
+      projectsSha = await saveFile(PROJECTS_PATH, projectsSha, projectsData, message);
+    }
+
+    async function togglePublish(id) {
+      const p = projectsData.find((x) => x.id === id);
+      if (!p) return;
+      p.published = !p.published;
+      showStatus('Committing…');
+      try {
+        await commitProjects(`${p.published ? 'Publish' : 'Unpublish'} project: ${p.title}`);
+        renderProjectList();
+        showStatus('Saved. GitHub Pages will redeploy shortly.', 'ok');
+      } catch (e) {
+        p.published = !p.published;
+        showStatus(`Failed: ${e.message}`, 'error');
+      }
+    }
+
+    async function deleteProject(id) {
+      const p = projectsData.find((x) => x.id === id);
+      if (!p || !confirm(`Delete "${p.title}"? This commits immediately.`)) return;
+      const prev = projectsData;
+      projectsData = projectsData.filter((x) => x.id !== id);
+      showStatus('Committing…');
+      try {
+        await commitProjects(`Delete project: ${p.title}`);
+        renderProjectList();
+        showStatus('Deleted and committed.', 'ok');
+      } catch (e) {
+        projectsData = prev;
+        showStatus(`Failed: ${e.message}`, 'error');
+      }
+    }
+
+    document.getElementById('p-title').addEventListener('input', (e) => {
+      const idField = document.getElementById('p-id');
+      if (!document.getElementById('p-editing-id').value) {
+        idField.value = slugify(e.target.value);
+      }
+    });
+
+    document.getElementById('project-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const editingId = document.getElementById('p-editing-id').value;
+      const id = slugify(document.getElementById('p-id').value);
+      const entry = {
+        id,
+        title: document.getElementById('p-title').value.trim(),
+        description: document.getElementById('p-description').value.trim(),
+        tags: document.getElementById('p-tags').value.split(',').map((s) => s.trim()).filter(Boolean),
+        tech: document.getElementById('p-tech').value.split(',').map((s) => s.trim()).filter(Boolean),
+        status: document.getElementById('p-status').value.trim(),
+        links: {
+          detail: document.getElementById('p-link-detail').value.trim() || undefined,
+          repo: document.getElementById('p-link-repo').value.trim() || undefined,
+          demo: document.getElementById('p-link-demo').value.trim() || undefined,
+          paper: document.getElementById('p-link-paper').value.trim() || undefined,
+        },
+        thumbnail: null,
+        published: document.getElementById('p-published').checked,
+      };
+
+      const prev = projectsData.slice();
+      const existingIndex = projectsData.findIndex((x) => x.id === (editingId || id));
+      if (existingIndex >= 0) {
+        projectsData[existingIndex] = entry;
+      } else {
+        projectsData.push(entry);
+      }
+
+      showStatus('Committing…');
+      try {
+        await commitProjects(`${existingIndex >= 0 ? 'Update' : 'Add'} project: ${entry.title}`);
+        renderProjectList();
+        clearForm();
+        showStatus('Saved. GitHub Pages will redeploy shortly.', 'ok');
+      } catch (e) {
+        projectsData = prev;
+        showStatus(`Failed: ${e.message}`, 'error');
+      }
+    });
+
+    document.getElementById('p-clear-btn').addEventListener('click', clearForm);
+
+    function fillProfileForm() {
+      document.getElementById('pr-name').value = profileData.name || '';
+      document.getElementById('pr-email').value = profileData.email || '';
+      document.getElementById('pr-github').value = profileData.github || '';
+      document.getElementById('pr-linkedin').value = profileData.linkedin || '';
+      document.getElementById('pr-scholar').value = profileData.scholar || '';
+      document.getElementById('pr-cv').value = profileData.cv || '';
+    }
+
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const updated = {
+        name: document.getElementById('pr-name').value.trim(),
+        email: document.getElementById('pr-email').value.trim(),
+        github: document.getElementById('pr-github').value.trim(),
+        linkedin: document.getElementById('pr-linkedin').value.trim(),
+        scholar: document.getElementById('pr-scholar').value.trim(),
+        cv: document.getElementById('pr-cv').value.trim(),
+      };
+      const prev = profileData;
+      profileData = updated;
+      showStatus('Committing…');
+      try {
+        profileSha = await saveFile(PROFILE_PATH, profileSha, profileData, 'Update contact info');
+        showStatus('Saved. GitHub Pages will redeploy shortly.', 'ok');
+      } catch (e) {
+        profileData = prev;
+        showStatus(`Failed: ${e.message}`, 'error');
+      }
+    });
+
+    document.querySelectorAll('[data-tab-btn]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-tab-btn');
+        document.querySelectorAll('[data-tab]').forEach((panel) => {
+          panel.classList.toggle('admin-hidden', panel.getAttribute('data-tab') !== target);
+        });
+      });
+    });
+
+    document.getElementById('disconnect-btn').addEventListener('click', () => {
+      try { sessionStorage.removeItem('gh_pat'); } catch (e) {}
+      token = null;
+      appPanel.classList.add('admin-hidden');
+      connectPanel.classList.remove('admin-hidden');
+      clearStatus();
+    });
+
+    async function connect(t) {
+      token = t;
+      showStatus('Loading current content…');
+      try {
+        const [projects, profile] = await Promise.all([
+          loadFile(PROJECTS_PATH),
+          loadFile(PROFILE_PATH),
+        ]);
+        projectsSha = projects.sha;
+        projectsData = projects.data;
+        profileSha = profile.sha;
+        profileData = profile.data;
+        try { sessionStorage.setItem('gh_pat', token); } catch (e) {}
+        renderProjectList();
+        fillProfileForm();
+        connectPanel.classList.add('admin-hidden');
+        appPanel.classList.remove('admin-hidden');
+        clearStatus();
+      } catch (e) {
+        showStatus(`Couldn't connect: ${e.message}`, 'error');
+      }
+    }
+
+    document.getElementById('connect-btn').addEventListener('click', () => {
+      const t = patInput.value.trim();
+      if (!t) return;
+      connect(t);
+    });
+
+    (function tryResume() {
+      try {
+        const saved = sessionStorage.getItem('gh_pat');
+        if (saved) connect(saved);
+      } catch (e) {}
+    })();
+  </script>
+</BaseLayout>

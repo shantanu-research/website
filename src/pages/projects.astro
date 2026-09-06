@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import projects from '../../data/projects.json';
+
+const base = import.meta.env.BASE_URL;
+function withBase(href: string) {
+  return href.startsWith('/') ? `${base}${href.slice(1)}` : href;
+}
+
+const published = (projects as any[]).filter((p) => p.published);
+---
+<BaseLayout title="Projects — VIOT Research" page="projects" description="Research software, simulations, and engineering projects.">
+  <div class="container">
+    <section class="hero">
+      <p class="hero-eyebrow">Portfolio</p>
+      <h1>Projects</h1>
+      <p class="hero-sub">
+        Simulation frameworks, research tooling, and engineering coursework — beyond the VIOT program above.
+      </p>
+    </section>
+
+    <section style="border-top: none; padding-top: 0;">
+      <div class="project-grid">
+        {published.map((p, i) => {
+          const primaryHref = p.links?.detail
+            ? withBase(p.links.detail)
+            : p.links?.repo || p.links?.demo || p.links?.paper || null;
+          const Tag = primaryHref ? 'a' : 'div';
+          return (
+            <Tag class="project-card" href={primaryHref} {...(primaryHref && primaryHref.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+              <span class="project-card-mark">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{p.title}</h3>
+              <p>{p.description}</p>
+              {p.tags?.length > 0 && (
+                <div class="tag-row">
+                  {p.tags.map((t: string) => <span class="tag-chip">{t}</span>)}
+                </div>
+              )}
+              {p.status && <span class="project-card-status">{p.status}</span>}
+              {(p.links?.repo || p.links?.demo || p.links?.paper) && (
+                <div class="project-card-links">
+                  {p.links?.repo && <a href={p.links.repo} target="_blank" rel="noopener noreferrer">Repo</a>}
+                  {p.links?.demo && <a href={p.links.demo} target="_blank" rel="noopener noreferrer">Demo</a>}
+                  {p.links?.paper && <a href={p.links.paper} target="_blank" rel="noopener noreferrer">Paper</a>}
+                </div>
+              )}
+              {p.tech?.length > 0 && <div class="project-card-tech">{p.tech.join(' · ')}</div>}
+            </Tag>
+          );
+        })}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
