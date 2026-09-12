@@ -57,4 +57,4 @@ the admin panel trigger the same workflow and redeploy automatically within a co
 minutes.
 
 `astro.config.mjs` sets `site`/`base` for this repo's GitHub Pages project-page URL
-(`https://chiku149.github.io/aerocore/`). If the repo is ever renamed, update `base` to match.
+(`https://shantanu-research.github.io/website/`). If the repo is ever renamed, update `base` to match.

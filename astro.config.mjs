@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://chiku149.github.io',
-  base: '/aerocore/',
+  site: 'https://shantanu-research.github.io',
+  base: '/website/',
 });
