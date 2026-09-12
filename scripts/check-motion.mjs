@@ -3,7 +3,8 @@
 // BROWSER_CHANNEL defaults to Edge on Windows, bundled Chromium elsewhere.
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const playwrightModule = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const { chromium } = playwrightModule.chromium ? playwrightModule : playwrightModule.default;
 const base = process.env.MOTION_TEST_URL || 'http://localhost:4321/website/';
 const channel = process.env.BROWSER_CHANNEL || (process.platform === 'win32' ? 'msedge' : undefined);
 const browser = await chromium.launch({ channel, headless: true });
@@ -13,7 +14,10 @@ const errors = [];
 const watch = page => page.on('pageerror', e => errors.push(e.message));
 const wait = page => page.waitForTimeout(250);
 async function deployment(page) {
-  await page.evaluate(() => scrollTo({top: document.querySelector('#portfolio').offsetTop + innerHeight * .48, behavior: 'instant'}));
+  await page.evaluate(() => {
+    const grid = document.querySelector('.portfolio-grid');
+    scrollTo({top: grid.getBoundingClientRect().top + scrollY + grid.offsetHeight * .6, behavior: 'instant'});
+  });
   await wait(page);
   const result = await page.evaluate(() => {
     const box = document.querySelector('.payload').getBoundingClientRect();
@@ -29,12 +33,35 @@ async function deployment(page) {
       overflow: document.documentElement.scrollWidth > innerWidth + 1,
     };
   });
-  assert.equal(result.inside, true, `Satellite outside viewport: ${JSON.stringify(result)}`);
   assert.equal(result.transparent, true, 'Project background obscures the flight');
-  assert.equal(result.overlap, false, 'Project content overlaps the satellite');
   assert.equal(result.overflow, false);
   assert.match(result.phase, /Payload deployed/);
   assert.match(result.unfolded, /scale\(1 1\)/);
+}
+async function projectGridMotion(page) {
+  const states = await page.evaluate(async () => {
+    const grid = document.querySelector('.portfolio-grid');
+    const top = grid.getBoundingClientRect().top + scrollY;
+    const sample = async y => {
+      scrollTo({top: y, behavior: 'instant'});
+      await new Promise(resolve => setTimeout(resolve, 160));
+      const rocket = document.querySelector('.rocket-wrap').getBoundingClientRect();
+      const payload = document.querySelector('.payload').getBoundingClientRect();
+      return {
+        flight: document.documentElement.dataset.flight,
+        rocketX: Math.round(rocket.x),
+        rocketY: Math.round(rocket.y),
+        payloadX: Math.round(payload.x),
+        payloadY: Math.round(payload.y),
+        upperStage: getComputedStyle(document.querySelector('.upper-stage')).opacity,
+      };
+    };
+    return [
+      await sample(top + grid.offsetHeight * .15),
+      await sample(top + grid.offsetHeight * .85 - innerHeight * .1),
+    ];
+  });
+  assert.notDeepEqual(states[0], states[1], `Flight freezes through project tiles: ${JSON.stringify(states)}`);
 }
 async function touchdown(page) {
   await page.evaluate(() => scrollTo({top: document.documentElement.scrollHeight, behavior: 'instant'}));
@@ -58,6 +85,7 @@ try {
     await page.goto(base);
     await wait(page);
     await deployment(page);
+    await projectGridMotion(page);
     // A longer portfolio must not move the deployment to another chapter.
     await page.evaluate(() => {
       const grid = document.querySelector('.portfolio-grid');

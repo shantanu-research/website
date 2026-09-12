@@ -37,6 +37,7 @@ const base = import.meta.env.BASE_URL;
               <path d="M0 0h-12" stroke="#c9c4ae" stroke-width="2"/>
               <rect x="-48" y="-26" width="36" height="52" fill="url(#solar)" stroke="#b7ccd0"/>
               <path d="M-36-26v52m12-52v52m-24-39h36m-36 13h36m-36 13h36" stroke="#9ebdc9" stroke-width=".65"/>
+              <path class="solar-sweep" d="M-47-23L-14 23" fill="none" stroke="#d7f1e7" stroke-width="1.2"/>
               <g transform="translate(-48 0)"><g class="solar-tip solar-tip-left" transform="scale(.02 1)">
                 <rect x="-38" y="-26" width="36" height="52" fill="url(#solar)" stroke="#b7ccd0"/>
                 <path d="M-26-26v52m12-52v52m-24-39h36m-36 13h36m-36 13h36" stroke="#9ebdc9" stroke-width=".65"/>
@@ -46,6 +47,7 @@ const base = import.meta.env.BASE_URL;
               <path d="M0 0h12" stroke="#c9c4ae" stroke-width="2"/>
               <rect x="12" y="-26" width="36" height="52" fill="url(#solar)" stroke="#b7ccd0"/>
               <path d="M24-26v52m12-52v52m-24-39h36m-36 13h36m-36 13h36" stroke="#9ebdc9" stroke-width=".65"/>
+              <path class="solar-sweep solar-sweep-late" d="M13-23L46 23" fill="none" stroke="#d7f1e7" stroke-width="1.2"/>
               <g transform="translate(48 0)"><g class="solar-tip solar-tip-right" transform="scale(.02 1)">
                 <rect x="2" y="-26" width="36" height="52" fill="url(#solar)" stroke="#b7ccd0"/>
                 <path d="M14-26v52m12-52v52m-24-39h36m-36 13h36m-36 13h36" stroke="#9ebdc9" stroke-width=".65"/>
@@ -203,6 +205,8 @@ function setup() {
  .to('.solar-tip-left',{attr:{transform:'scale(1 1)'},duration:.05,ease:'power2.inOut'},.605)
  .to('.solar-tip-right',{attr:{transform:'scale(1 1)'},duration:.05,ease:'power2.inOut'},.615)
  .to('.upper-exhaust',{attr:{transform:'scale(1 0)'},duration:.05},.53)
+ .to('.upper-stage',{y:-145,x:82,duration:.14,ease:'power1.inOut'},.59)
+ .to('.rocket-wrap',{rotation:4,y:'-25vh',scale:.95,duration:.13,ease:'power1.inOut'},.6)
  .to('.upper-stage',{y:-320,x:150,opacity:0,duration:.1},.73)
  .to('.rocket-wrap',{rotation:0,y:'-22vh',scale:1,duration:.1,ease:'power1.inOut'},.72)
  .to('.booster',{y:0,x:0,rotation:0,duration:.1,ease:'power1.inOut'},.72)
@@ -217,15 +221,14 @@ function setup() {
  .to('.booster-exhaust',{attr:{transform:'scale(.5 .14)'},duration:.115,ease:'power2.out'},.835)
  .to('.booster-exhaust',{attr:{transform:'scale(.35 0)'},duration:.025},.95)
  .to({}, {duration:.025},.975);
- // Anchor the flight to chapters: adding project cards must not move deployment
- // out of its viewing window or send the satellite home before the list ends.
+ // Anchor the flight to chapters. The entire project grid is a flight segment,
+ // so a long list continues the orbital sequence instead of freezing mid-scene.
  let stops: number[] = [];
- const beats = [0, .24, .36, .48, .67, .72, .84, 1];
+ const beats = [0, .24, .36, .48, .78, .84, 1];
  const measure = () => {
    const top = (id: string) => document.querySelector<HTMLElement>(id)!.offsetTop;
    stops = [0, top('#about'), top('#research'), top('#portfolio') - innerHeight * .2,
-     top('#portfolio') + innerHeight * .48, top('#approach') - innerHeight * .25,
-     top('#contact'), document.documentElement.scrollHeight - innerHeight];
+     top('#approach'), top('#contact'), document.documentElement.scrollHeight - innerHeight];
  };
  measure();
  ScrollTrigger.create({trigger:'main',start:'top top',end:'bottom bottom',onRefresh:measure,onUpdate(){
@@ -246,6 +249,7 @@ document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()
 *{box-sizing:border-box}html{margin:0;scroll-behavior:smooth;scroll-padding-top:95px}body{margin:0;background:#ecece7;color:#202b30;font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}button{font:inherit}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #d74e26;outline-offset:6px}::selection{background:#ed6b42;color:white}.skip{position:fixed;top:-80px;left:20px;z-index:99;background:#fff;padding:15px}.skip:focus{top:10px}header{height:92px;position:absolute;inset:0 0 auto;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 5.5%;border-bottom:1px solid #263a3b20}.wordmark{font-size:32px;font-weight:800;letter-spacing:-3px}.wordmark span{color:#de532c;font-size:27px;margin-left:4px}nav{display:flex;gap:36px;font-size:13px}nav a:hover,.header-link:hover{color:#c44724}.header-link{font-size:13px}.header-link span{margin-left:20px;color:#d4502b}main{position:relative}.flight-world{--rocket-right:10%;--rocket-width:34vh;--pad-width:clamp(150px,26vw,350px);position:fixed;inset:0;overflow:hidden;background:#ecece7;pointer-events:none}.sky-glow{position:absolute;width:850px;height:850px;top:-120px;right:-180px;background:radial-gradient(ellipse,#fefdf7 0%,#e7e9e2 45%,transparent 70%)}.orbit{position:absolute;border:1px solid #899a992b;border-radius:50%;width:760px;height:760px;right:-170px;top:2%;transform:rotate(-25deg)}.orbit-two{width:570px;height:570px;right:-75px;top:15%}.orbit-one:after{content:'';position:absolute;inset:45px;border:1px dashed #899a9929;border-radius:50%}.rocket-wrap{position:absolute;z-index:1;right:var(--rocket-right);bottom:-4vh;width:var(--rocket-width);height:79.333333vh;transform-origin:50% 55%;filter:drop-shadow(18px 14px 14px #172c3528)}.rocket{width:100%;height:100%;overflow:visible}.payload{visibility:hidden}.ground{position:absolute;bottom:0;right:0;width:100%;height:13vh;background:linear-gradient(180deg,#aeb8b24a,transparent);border-top:1px solid #7d8b8355}.pad{position:absolute;right:calc(var(--rocket-right) + var(--rocket-width)/2 - var(--pad-width)/2);top:-22px;width:var(--pad-width);height:44px;border:1px solid #9aa5a1;border-radius:50%;background:#d8ddd6;box-shadow:0 8px 0 #bbc3bd;display:grid;place-items:center}.pad:before{content:'';position:absolute;inset:6px;border:1px dashed #8d9991;border-radius:50%}.pad span{font-size:17px;letter-spacing:8px;color:#8b9890;transform:scaleY(.5)}.stars{position:absolute;inset:0;opacity:0}.stars i{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%}.planet{position:absolute;right:-40%;bottom:-95vw;width:130vw;height:110vw;border-radius:50%;background:radial-gradient(ellipse at 40% 0%,#789a9c 0%,#345465 8%,#182e3c 26%,#111e28 48%);box-shadow:0 -6px 22px #b1e1e055,0 -1px 3px #e0ffff;opacity:0}.chapter{position:relative;min-height:110svh;padding:120px 5.5%;display:flex;align-items:center}.intro{min-height:100svh;padding-top:135px;padding-bottom:140px;align-items:center}.intro-copy{width:75%;position:relative;z-index:2}.eyebrow{font-family:Consolas,monospace;text-transform:uppercase;letter-spacing:1.7px;font-size:10px;margin:0 0 30px;color:#667470}h1{font-size:clamp(46px,6.7vw,108px);line-height:1.02;letter-spacing:-.065em;font-weight:500;margin:0 0 34px}h1 span{color:#7b8580}.lede{font-size:16px;line-height:1.7;color:#606b66;margin-bottom:33px}.text-link{display:inline-flex;font-size:12px;align-items:center;gap:30px;border-bottom:1px solid #8d9890;padding-bottom:12px}.text-link span{color:#d6512b;font-size:19px}.hero-bottom{position:absolute;bottom:36px;left:5.5%;right:5.5%;display:flex;justify-content:space-between;font-family:Consolas,monospace;font-size:9px;letter-spacing:1.4px}.scroll-hint{display:flex;gap:35px}.vehicle-label{position:absolute;right:4%;top:31%;font-size:11px;line-height:1.6}.vehicle-label>span{font-family:Consolas,monospace;font-size:8px;color:#77837d;letter-spacing:2px}.copy{max-width:570px;width:48%;position:relative;z-index:2}h2{font-size:clamp(42px,4.6vw,72px);line-height:1.04;font-weight:500;letter-spacing:-.055em;margin:0 0 32px}h2 em{font-style:normal;color:#df6c47}.copy>p:not(.eyebrow){font-size:15px;line-height:1.8;color:#697670;max-width:460px}.copy>p.large-copy{font-size:21px;line-height:1.5;color:inherit}.signature{font-size:20px;margin-top:40px;letter-spacing:-.6px}.signature span{display:block;font-size:10px;color:#78847b;margin-top:9px;letter-spacing:.4px}.research,.approach{color:#f0f2e9;background:linear-gradient(90deg,#101c24 0%,#101c24ee 35%,transparent 80%)}.research .eyebrow,.approach .eyebrow{color:#a8b9b8}.research .copy>p:not(.large-copy):not(.eyebrow),.approach .copy p{color:#aabbbb}.research-facts{display:flex;gap:50px;margin:32px 0}.research-facts strong{display:block;font-size:36px;font-weight:400;letter-spacing:-1px}.research-facts span{display:block;font-size:10px;color:#a8b9b8;margin-top:8px}details{border-top:1px solid #829e9b55;padding-top:20px;font-size:13px}summary{cursor:pointer;display:flex;justify-content:space-between;list-style:none}summary span{color:#ed885f}details p{line-height:1.7;color:#b7c8c8}.method{display:flex;gap:25px;margin:30px 0}.method>span{font-family:Consolas,monospace;font-size:10px;color:#df8562;padding-top:5px}.method h3{font-size:19px;font-weight:400;letter-spacing:-.4px;margin:0 0 9px}.method p{font-size:14px;line-height:1.65;margin:0;max-width:395px}.contact{min-height:100svh;padding-bottom:150px}.contact .copy{width:60%;max-width:740px}.contact-link{font-size:19px;display:inline-flex;gap:60px;margin-top:25px;padding-bottom:15px;border-bottom:1px solid #7d8c82}.contact-link span{color:#d9562e}.replay{display:block;width:fit-content;font-size:11px;color:#69766b;margin-top:30px}footer{position:absolute;bottom:30px;left:5.5%;right:5.5%;display:flex;justify-content:space-between;font-size:10px;color:#627266}.flight-status{position:fixed;bottom:76px;right:5.5%;z-index:8;display:flex;align-items:center;gap:10px;font-family:Consolas,monospace;font-size:9px;color:#344c40}.status-dot{width:5px;height:5px;background:#d65c32;border-radius:50%}.phase-count{margin-left:15px;color:#6d7e72}.flight-status button{background:transparent;border:0;border-left:1px solid #8a9b8855;color:inherit;font-size:9px;padding:5px 0 5px 12px;cursor:pointer}.flight-status.in-space{color:#c5d8d2}.in-space .phase-count{color:#a6bcb3}@media(min-width:1600px){.copy{margin-left:5%}.flight-world{--rocket-right:14%}}@media(max-width:760px){header{height:76px;padding:0 6%}nav{gap:18px;font-size:11px}.header-link{display:none}.chapter{padding:110px 7% 80px;min-height:115svh;align-items:flex-start}.intro{min-height:100svh;padding-top:120px}.intro-copy{width:100%}h1{font-size:clamp(42px,8.6vw,64px);letter-spacing:-.055em}.eyebrow{font-size:8px;letter-spacing:1.2px;margin-bottom:22px}.lede{font-size:13px;max-width:290px}.text-link{font-size:10px;gap:18px}.flight-world{--rocket-right:-2%;--rocket-width:24vh}.rocket-wrap{height:56vh;bottom:1vh;opacity:.9}.orbit{right:-400px}.orbit-two{right:-300px}.ground{width:100%}.vehicle-label{display:none}.hero-bottom{bottom:26px;font-size:7px}.hero-bottom>span:first-child{max-width:120px;line-height:1.8}.copy{width:78%;max-width:500px}h2{font-size:41px}.copy>p:not(.eyebrow){font-size:13px;line-height:1.7}.copy>p.large-copy{font-size:18px}.research .copy,.approach .copy{width:82%}.research-facts{gap:27px}.research-facts strong{font-size:29px}.research-facts span{font-size:8px}.method{gap:15px;margin:25px 0}.method h3{font-size:16px}.method p{font-size:12px}.contact .copy{width:95%}.contact{min-height:100svh}.contact h2{font-size:40px}.contact-link{font-size:16px}.flight-status{bottom:60px;right:6%;font-size:8px;gap:7px}.phase-count{display:none}.flight-status button{font-size:8px}footer{font-size:8px;gap:20px;bottom:20px}footer span:last-child{max-width:130px;text-align:right}.planet{bottom:-45vh;width:200vw;height:100vh}.research,.approach{background:linear-gradient(90deg,#101c24f5 0%,#101c24e0 48%,transparent 90%)}.about .copy{background:linear-gradient(90deg,#ecece7f0,#ecece7b0,transparent)}.contact .copy{background:linear-gradient(90deg,#ecece7ec,#ecece7b0,transparent)}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.research,.approach{color:#202b30}.research .eyebrow,.approach .eyebrow,.research .copy>p:not(.large-copy):not(.eyebrow),.approach .copy p,.research-facts span,.method p,details p{color:#57675e}.research,.approach{background:transparent}.chapter{min-height:90svh}}
 /* Secondary loops never transform the scroll-controlled nozzle or wing hinges. */
 .vent,.rcs,.signal-ring,.pad-dust{opacity:0}
+.solar-sweep{stroke-dasharray:52;stroke-dashoffset:52;opacity:0}
 .vent-puff{fill:#c5d0cd}.signal-ring{transform-box:fill-box;transform-origin:center}
 .pad-light{position:absolute;top:17px;width:3px;height:3px;background:#d5754d;border-radius:50%}.pad-light-left{left:10%}.pad-light-right{right:10%}
 .pad-dust{position:absolute;inset:0;pointer-events:none}.pad-dust i{position:absolute;left:48%;top:8px;width:24px;height:9px;border-radius:50%;background:#aeb9b0;filter:blur(3px)}
@@ -260,6 +264,8 @@ document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()
 .flight-active[data-flight="orbit"] .satellite-drift{animation:satellite-float 7s ease-in-out infinite alternate}
 .flight-active[data-flight="orbit"] .sat-beacon{animation:beacon-glow 2.8s ease-in-out infinite}
 .flight-active[data-flight="orbit"] .signal-ring{animation:radio-pulse 4.5s ease-out infinite}
+.flight-active[data-flight="orbit"] .solar-sweep{animation:solar-read 4.2s linear infinite}
+.flight-active[data-flight="orbit"] .solar-sweep-late{animation-delay:2.1s}
 .flight-active .signal-late{animation-delay:2.25s!important}
 .flight-active[data-flight="landing"] .pad-dust{opacity:.45}
 .flight-active[data-flight="landing"] .pad-dust i{animation:dust-drift 2.7s ease-out infinite}
@@ -273,6 +279,7 @@ document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()
 @keyframes attitude-puff{0%,8%,18%,100%{opacity:0}10%,13%{opacity:.5}}
 @keyframes satellite-float{from{transform:translate(0,0)}to{transform:translate(-2px,3px)}}
 @keyframes radio-pulse{0%{transform:scale(1);opacity:0}10%{opacity:.4}100%{transform:scale(4);opacity:0}}
+@keyframes solar-read{0%,15%{stroke-dashoffset:52;opacity:0}25%{opacity:.65}70%,100%{stroke-dashoffset:-52;opacity:0}}
 @keyframes dust-drift{0%{transform:translateX(0) scale(.4);opacity:0}20%{opacity:.45}100%{transform:translateX(calc(85px * var(--dust-direction,1))) scale(2.5);opacity:0}}
 </style>
 <style>
@@ -285,13 +292,33 @@ document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()
 .portfolio-head .large-copy{color:#aabbbb;font-size:16px;line-height:1.7;max-width:460px}
 .portfolio-head,.portfolio-grid{width:58%}
 .portfolio-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5px;margin-top:56px;background:#263a3b40;border:1px solid #263a3b40;position:relative;z-index:2}
-.portfolio-card{display:flex;flex-direction:column;gap:10px;padding:26px 24px;background:#0d1620;transition:background .25s ease}
+.portfolio-card{display:flex;flex-direction:column;gap:10px;padding:26px 24px;background:#0d1620;transition:background .25s ease,transform .25s ease;position:relative;overflow:hidden}
 .portfolio-card:hover,.portfolio-card:focus-visible{background:#152332}
+.portfolio-card:hover{transform:translateY(-2px)}
+.portfolio-card::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent 0%,#9bdcbd 35%,#e88a62 50%,#9bdcbd 65%,transparent 100%);opacity:0;transform:scaleX(.15)}
 .portfolio-icon{color:#df8562}
-.portfolio-icon svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.portfolio-icon svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
 .portfolio-card h3{font-size:16px;font-weight:500;letter-spacing:-.2px;margin:2px 0 0;color:#f0f2e9}
 .portfolio-card p{font-size:12.5px;line-height:1.6;color:#9fb0af;margin:0;flex-grow:1}
-.portfolio-status{font-family:Consolas,monospace;font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#df8562}
+.portfolio-status{font-family:Consolas,monospace;font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#df8562;display:flex;align-items:center;gap:7px}
+.portfolio-status::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;box-shadow:0 0 0 0 currentColor;flex:none}
+@media(prefers-reduced-motion:no-preference){
+  :global(html.flight-active[data-flight="orbit"]) .portfolio-card::after{animation:telemetry-sweep 4.8s ease-in-out infinite}
+  :global(html.flight-active[data-flight="orbit"]) .portfolio-card:nth-child(2n)::after{animation-delay:-2.4s}
+  :global(html.flight-active[data-flight="orbit"]) .portfolio-status::before{animation:status-pulse 3.6s ease-out infinite}
+  :global(html.flight-active[data-flight="orbit"]) .portfolio-card:nth-child(2) .portfolio-icon polyline,:global(html.flight-active[data-flight="orbit"]) .portfolio-card:nth-child(4) .portfolio-icon polyline{stroke-dasharray:48;animation:trace-signal 4s linear infinite}
+  :global(html.flight-active[data-flight="orbit"]) .portfolio-card:nth-child(1) .portfolio-icon svg,:global(html.flight-active[data-flight="orbit"]) .portfolio-card:nth-child(5) .portfolio-icon svg{transform-box:fill-box;transform-origin:center;animation:icon-orbit 6s ease-in-out infinite}
+  :global(html.flight-active[data-flight="orbit"]) .portfolio-card:nth-child(3) .portfolio-icon svg{transform-box:fill-box;transform-origin:center;animation:icon-breathe 4.5s ease-in-out infinite}
+  :global(html.flight-active[data-flight="orbit"]) .portfolio-card:nth-child(6) .portfolio-icon svg{animation:icon-breathe 3.5s ease-in-out infinite reverse}
+  :global(html.flight-active[data-flight="orbit"]) .portfolio-card:nth-child(7) .portfolio-icon circle{animation:node-pulse 3.2s ease-in-out infinite}
+  :global(html.flight-active[data-flight="orbit"]) .portfolio-card:nth-child(7) .portfolio-icon circle:nth-child(2){animation-delay:-1.1s}
+}
+@keyframes telemetry-sweep{0%,20%{opacity:0;transform:scaleX(.15)}30%,55%{opacity:.9;transform:scaleX(1)}70%,100%{opacity:0;transform:scaleX(.4)}}
+@keyframes status-pulse{0%,55%,100%{box-shadow:0 0 0 0 currentColor;opacity:.55}65%{box-shadow:0 0 0 5px transparent;opacity:1}}
+@keyframes trace-signal{to{stroke-dashoffset:-96}}
+@keyframes icon-orbit{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(4deg) translateY(-2px)}}
+@keyframes icon-breathe{0%,100%{transform:scale(1);opacity:.75}50%{transform:scale(1.12);opacity:1}}
+@keyframes node-pulse{0%,100%{opacity:.45}50%{opacity:1}}
 @media(max-width:760px){.portfolio{padding:0 6% 90px}.portfolio-flight-window{display:flex;height:95svh;align-items:flex-end;padding-bottom:32px;font:9px Consolas,monospace;color:#a8b9b8;letter-spacing:1px}.portfolio-head,.portfolio-grid{width:100%}.portfolio-head{padding:24px 0;background:linear-gradient(90deg,#101c24f5,#101c24b0,transparent)}.portfolio-grid{grid-template-columns:1fr;margin-top:36px}}
 @media(prefers-reduced-motion:reduce){.portfolio{background:#101c24}.portfolio-flight-window{display:none}}
 @media(min-width:761px){
