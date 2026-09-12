@@ -1,107 +1,212 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import allProjects from '../../data/projects.json';
-import profile from '../../data/profile.json';
-
 const base = import.meta.env.BASE_URL;
-const published = (allProjects as any[]).filter((p) => p.published);
 ---
-<BaseLayout title="Shantanu Pawar — Projects & Research" page="home">
-  <div class="container">
-    <section class="hero">
-      <p class="hero-eyebrow">Mechanical Engineering — PVG's COETM, Pune</p>
-      <h1 data-anime="hero-title">Shantanu Pawar</h1>
-      <p class="hero-sub">
-        Propulsion, plasma physics, and computational engineering — from a GPU plasma-simulation
-        research program to embedded systems, quantum computing, and structural analysis.
-        This page indexes the work; each project links to its own writeup, repo, or dataset.
-      </p>
-      <div class="hero-meta">
-        <div class="hero-stat">
-          <div class="hero-stat-val">{published.length}</div>
-          <div class="hero-stat-label">Active Projects</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-val">3</div>
-          <div class="hero-stat-label">Conference Submissions</div>
-        </div>
-      </div>
-      <div class="btn-row" style="margin-top: 2.5rem;">
-        <a class="btn-outline btn-outline--accent" href={`${base}viot/`}>Flagship: VIOT research</a>
-        <a class="btn-outline" href={`${base}about/`}>About &amp; contact</a>
-      </div>
-    </section>
-
-    <section style="border-top: none; padding-top: 0;">
-      <div class="section-inner">
-        <div class="section-label-col"><h2 class="label">Portfolio</h2></div>
-        <div>
-          <h3 class="section-title">Projects &amp; research</h3>
-          <div class="project-grid" data-anime="project-grid">
-            {published.map((p, i) => {
-              const href = p.links?.detail
-                ? (p.links.detail.startsWith('/') ? `${base}${p.links.detail.slice(1)}` : p.links.detail)
-                : (p.links?.repo || `${base}projects/`);
-              const isExternal = href.startsWith('http');
-              return (
-                <a class="project-card" data-anime-item href={href} target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}>
-                  <span class="project-card-mark">{String(i + 1).padStart(2, '0')}</span>
-                  <h3>{p.title}</h3>
-                  <p>{p.description}</p>
-                  {p.tags?.length > 0 && (
-                    <div class="tag-row">
-                      {p.tags.slice(0, 2).map((t: string) => <span class="tag-chip">{t}</span>)}
-                    </div>
-                  )}
-                  {p.status && <span class="project-card-status">{p.status}</span>}
-                </a>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </section>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Shantanu Pawar — mechanical engineering, computational physics, and a portfolio of research and engineering projects spanning propulsion, plasma physics, machine learning, and embedded systems. Author of VIOT." />
+  <meta name="theme-color" content="#ecece7" />
+  <title>Shantanu Pawar — Engineering beyond the horizon</title>
+  <link rel="icon" href={`${base}favicon.svg`} />
+</head>
+<body>
+<a class="skip" href="#about">Skip to about me</a>
+<header>
+  <a class="wordmark" href="#home" aria-label="Shantanu Pawar home">SP<span>↗</span></a>
+  <nav aria-label="Main navigation"><a href="#about">About</a><a href="#research">Research</a><a href="#approach">Approach</a><a href={`${base}projects/`}>Projects</a></nav>
+  <a class="header-link" href="#contact">Let’s connect <span>↗</span></a>
+</header>
+<main id="home">
+  <div class="flight-world" aria-hidden="true">
+    <div class="sky-glow"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+    <div class="stars">{Array.from({length:45},(_,i)=><i style={`left:${(i*37+11)%100}%;top:${(i*23+7)%100}%;opacity:${0.2+(i%4)*0.15}`}></i>)}</div>
+    <div class="planet"></div>
+    <div class="rocket-wrap">
+      <svg class="rocket" viewBox="0 0 300 700" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="metal"><stop stop-color="#7d8385"/><stop offset=".23" stop-color="#f5f5f0"/><stop offset=".48" stop-color="#fff"/><stop offset=".7" stop-color="#cbceca"/><stop offset="1" stop-color="#717a7d"/></linearGradient>
+          <linearGradient id="dark"><stop stop-color="#10191e"/><stop offset=".48" stop-color="#424c50"/><stop offset="1" stop-color="#10191e"/></linearGradient>
+          <linearGradient id="fire" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff9da"/><stop offset=".2" stop-color="#ffc16e"/><stop offset=".55" stop-color="#f45b27"/><stop offset="1" stop-color="#f45b27" stop-opacity="0"/></linearGradient>
+          <linearGradient id="solar"><stop stop-color="#2a526e"/><stop offset=".5" stop-color="#648da1"/><stop offset="1" stop-color="#153149"/></linearGradient>
+        </defs>
+        <g class="upper-stage">
+          <g class="payload"><g class="satellite-drift">
+            <g transform="translate(128 111)"><g class="solar-wing solar-left" transform="scale(.035 1)">
+              <path d="M0 0h-12" stroke="#c9c4ae" stroke-width="2"/>
+              <rect x="-48" y="-26" width="36" height="52" fill="url(#solar)" stroke="#b7ccd0"/>
+              <path d="M-36-26v52m12-52v52m-24-39h36m-36 13h36m-36 13h36" stroke="#9ebdc9" stroke-width=".65"/>
+              <g transform="translate(-48 0)"><g class="solar-tip solar-tip-left" transform="scale(.02 1)">
+                <rect x="-38" y="-26" width="36" height="52" fill="url(#solar)" stroke="#b7ccd0"/>
+                <path d="M-26-26v52m12-52v52m-24-39h36m-36 13h36m-36 13h36" stroke="#9ebdc9" stroke-width=".65"/>
+              </g></g>
+            </g></g>
+            <g transform="translate(172 111)"><g class="solar-wing solar-right" transform="scale(.035 1)">
+              <path d="M0 0h12" stroke="#c9c4ae" stroke-width="2"/>
+              <rect x="12" y="-26" width="36" height="52" fill="url(#solar)" stroke="#b7ccd0"/>
+              <path d="M24-26v52m12-52v52m-24-39h36m-36 13h36m-36 13h36" stroke="#9ebdc9" stroke-width=".65"/>
+              <g transform="translate(48 0)"><g class="solar-tip solar-tip-right" transform="scale(.02 1)">
+                <rect x="2" y="-26" width="36" height="52" fill="url(#solar)" stroke="#b7ccd0"/>
+                <path d="M14-26v52m12-52v52m-24-39h36m-36 13h36m-36 13h36" stroke="#9ebdc9" stroke-width=".65"/>
+              </g></g>
+            </g></g>
+            <rect x="129" y="89" width="42" height="46" rx="3" fill="#b49a62" stroke="#eee1b1"/>
+            <path d="M132 93l13 7 21-8m-34 37 12-9 23 10m-35-25 8 12 25-8" fill="none" stroke="#e3cb90" stroke-width=".7"/>
+            <rect x="134" y="99" width="32" height="25" rx="2" fill="url(#dark)" stroke="#828b89"/>
+            <circle cx="150" cy="111" r="9" fill="#142c3d" stroke="#aec5c7"/><circle cx="150" cy="111" r="5" fill="#385d74"/>
+            <circle cx="147" cy="108" r="2" fill="#c3e6eb" opacity=".7"/>
+            <path d="M150 89V76m-10-6q10 14 20 0M135 134l-6 9m36-9 6 9" fill="none" stroke="#e4e0c9" stroke-width="1.5"/>
+            <circle class="sat-beacon" cx="164" cy="94" r="1.6" fill="#9bdcbd"/>
+            <g transform="translate(150 71)"><circle class="signal-ring" r="7" fill="none" stroke="#b0d7d1" stroke-width=".8"/><circle class="signal-ring signal-late" r="7" fill="none" stroke="#b0d7d1" stroke-width=".8"/></g>
+            <circle cx="133" cy="93" r="1" fill="#f6e9c6"/><circle cx="133" cy="131" r="1" fill="#f6e9c6"/><circle cx="167" cy="131" r="1" fill="#f6e9c6"/>
+          </g></g>
+          <path class="fairing-left" d="M150 24C120 48 107 85 107 125l9 31h34z" fill="url(#metal)" stroke="#a3aaa8" stroke-width=".6"/>
+          <path class="fairing-right" d="M150 24c30 24 43 61 43 101l-9 31h-34z" fill="url(#metal)" stroke="#a3aaa8" stroke-width=".6"/>
+          <path d="M116 156h68v114h-68z" fill="url(#metal)"/><path d="M116 235h68v35h-68z" fill="url(#dark)"/>
+          <path d="M137 270h26l7 16h-40z" fill="url(#dark)"/>
+          <g transform="translate(150 286)"><g class="upper-exhaust" visibility="hidden"><path d="M-14 0Q-30 35 0 77Q30 35 14 0Z" fill="url(#fire)"/><path d="M-6 0Q-10 22 0 40Q10 22 6 0Z" fill="#fff8d9"/></g></g>
+        </g>
+        <g class="booster">
+          <path d="M116 272h68v218h-68z" fill="url(#metal)" stroke="#929a97" stroke-width=".7"/>
+          <path d="M116 285h68m-68 11h68m-68 143h68m-68 7h68" stroke="#8e9797" stroke-width="1"/>
+                    <path d="M116 319h68v9h-68z" fill="#eb613d"/>
+          <g fill="#687574"><circle cx="123" cy="281" r="1"/><circle cx="177" cy="281" r="1"/><circle cx="123" cy="435" r="1"/><circle cx="177" cy="435" r="1"/></g>
+          <path d="M174 337v87m-3-87h6m-6 87h6M124 299h10v10h-10z" fill="none" stroke="#8f9996" stroke-width=".6"/>
+          <circle class="vehicle-beacon" cx="178" cy="303" r="1.7" fill="#d86542"/>
+          <g class="vent" transform="translate(184 307)"><circle class="vent-puff" r="2"/><circle class="vent-puff vent-late" r="2"/></g>
+          <g class="rcs" transform="translate(116 287)"><path class="rcs-puff" d="M0-2Q-12-7-21 0Q-12 7 0 2" fill="#cbe3e4"/></g>
+          <text x="151" y="380" text-anchor="middle" font-size="10" font-family="Arial" letter-spacing="2" fill="#384348" transform="rotate(90 151 380)">OVERDRIVE</text>
+          <path d="M116 455l-18 38h18m68-38 18 38h-18" fill="url(#dark)"/>
+          <path d="M117 475h66v24h-66z" fill="url(#dark)"/><path d="M133 499h34l9 20h-52z" fill="url(#dark)"/>
+          <g class="leg leg-left"><path d="M119 452L85 545h-12l40-99zM70 545h22v5H70z" fill="#4a5558" stroke="#9ba6a5"/></g>
+          <g class="leg leg-right"><path d="M181 452l34 93h12l-40-99zM208 545h22v5h-22z" fill="#4a5558" stroke="#9ba6a5"/></g>
+          <g transform="translate(150 519)"><g class="booster-exhaust" visibility="hidden"><path class="flame" d="M-21 0Q-40 47 0 165Q40 47 21 0Z" fill="url(#fire)"/>
+          <path class="flame-core" d="M-10 0Q-16 39 0 75Q16 39 10 0Z" fill="#fff8d9"/></g></g>
+        </g>
+      </svg>
+    </div>
+    <div class="ground"><div class="pad"><span>SP</span><i class="pad-light pad-light-left"></i><i class="pad-light pad-light-right"></i><div class="pad-dust"><i></i><i></i><i></i><i></i></div></div></div>
   </div>
+  <section class="chapter intro" id="intro">
+    <div class="intro-copy"><p class="eyebrow">Shantanu Pawar / Mechanical engineering</p><h1>Grounded in physics.<br/><span>Built for beyond.</span></h1><p class="lede">I explore the physics that takes us further.<br/>From ion–surface interactions to the future of propulsion.</p><a class="text-link" href="#about">Meet the mind behind the mission <span>↗</span></a></div>
+    <div class="hero-bottom"><span>ENGINEER. RESEARCHER. EXPLORER.</span><span class="scroll-hint">Scroll to launch <span>↓</span></span></div>
+    <div class="vehicle-label"><span>THE FLIGHT</span><p>A little curiosity.<br/>A lot of thrust.</p></div>
+  </section>
+  <section class="chapter about" id="about"><div class="copy"><p class="eyebrow">The person behind the physics</p><h2>Hi, I’m<br/>Shantanu.</h2><p class="large-copy">A mechanical engineer drawn to the questions that don’t have easy answers.</p><p>I’m at PVG’s College of Engineering, Technology and Management in Pune, India. My work brings computational engineering, plasma physics, and materials science together to understand how space propulsion can last longer.</p><p>For me, building a simulation is a way of asking a better question. Then letting the physics answer.</p><div class="signature">Shantanu Pawar<span>Author of the Virtual Ion-Optics Testbed</span></div></div></section>
+  <section class="chapter research" id="research"><div class="copy"><p class="eyebrow">Flagship research / VIOT</p><h2>Small interactions.<br/>Far-reaching<br/><em>consequences.</em></h2><p class="large-copy">A longer journey starts at the surface.</p><p>I created the Virtual Ion-Optics Testbed to investigate how carbon coatings affect erosion in the NASA NSTAR ion thruster. It connects the motion of a plasma to what happens when a single ion meets a surface.</p><div class="research-facts"><div><strong>36</strong><span>simulation campaign runs</span></div><div><strong>3 scales</strong><span>plasma · surface · material</span></div></div><details><summary>Inside the research <span>+</span></summary><p>The study compares molybdenum grids with graphene and graphene nanoplatelet coatings. Nanoplatelets reduced simulated erosion, while monolayer graphene introduced an additional erosion channel. Field emission remains a critical tradeoff.</p></details><a class="text-link" style="margin-top:28px;" href={`${base}projects/`}>VIOT is one of twelve — see the full project index <span>↗</span></a></div></section>
+  <section class="chapter approach" id="approach"><div class="copy"><p class="eyebrow">How I work</p><h2>Follow the question.<br/><em>Test everything.</em></h2><div class="method"><span>01</span><div><h3>Start with the physics.</h3><p>Understand the mechanisms before choosing the model. Plasma transport, charge exchange, and material response.</p></div></div><div class="method"><span>02</span><div><h3>Build across scales.</h3><p>Connect GPU particle simulations, molecular dynamics, and custom Poisson solvers.</p></div></div><div class="method"><span>03</span><div><h3>Make it reproducible.</h3><p>Trace each result back to its parameters, assumptions, and verification. Keep the unexpected findings, too.</p></div></div></div></section>
+  <section class="chapter contact" id="contact"><div class="copy"><p class="eyebrow">Back on Earth. Looking ahead.</p><h2>Every mission starts<br/>with a <em>conversation.</em></h2><p class="large-copy">Propulsion. Simulation. An interesting question.<br/>Let’s see where it takes us.</p><a class="contact-link" href="https://github.com/chiku149">Find me on GitHub <span>↗</span></a><a class="replay" href="#home">↑ Replay the flight</a></div><footer><span>© 2026 Shantanu Pawar</span><span>Made with curiosity. Grounded in science.</span></footer></section>
+  <aside class="flight-status" aria-label="Rocket flight phase"><span class="status-dot"></span><span id="phase">Ready for liftoff</span><span class="phase-count">01 / 05</span><button id="motion-toggle" type="button" aria-pressed="false">Pause motion</button></aside>
+</main>
+<script>
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
+const media = gsap.matchMedia();
+let paused = false;
+let context: gsap.Context | undefined;
+const button = document.querySelector<HTMLButtonElement>('#motion-toggle')!;
+const phases = ['Ready for liftoff', 'Liftoff · finding direction', 'Stage separation · going further', 'Payload deployed · in orbit', 'Touchdown · a new beginning'];
+function setup() {
+ document.querySelector('#phase')!.textContent = phases[0];
+ context = gsap.context(() => {
+ document.documentElement.classList.add('flight-active');
+ document.documentElement.dataset.flight='preflight';
+ gsap.set('.payload', {autoAlpha:0});
+ gsap.set('.solar-wing', {attr:{transform:'scale(.035 1)'}});
+ gsap.set('.solar-tip', {attr:{transform:'scale(.02 1)'}});
+ gsap.set('.leg-left', {attr:{transform:'rotate(155 116 452)'}});
+ gsap.set('.leg-right', {attr:{transform:'rotate(-155 184 452)'}});
+ // Fixed nozzle translation stays on the parent; only local exhaust length changes.
+ gsap.set('.booster-exhaust, .upper-exhaust', {attr:{transform:'scale(1 0)',visibility:'visible'}});
 
-  <script>
-    import { animate, stagger, eases } from 'animejs';
+  const tl = gsap.timeline({defaults:{ease:'none'}, onUpdate(){
+   const p=this.progress();
+   document.documentElement.dataset.flight=p<.035?'preflight':p<.34?'ascent':p<.54?'separation':p<.78?'orbit':p<.975?'landing':'landed';
+ }, scrollTrigger:{trigger:'main',start:'top top',end:'bottom bottom',scrub:0.65,invalidateOnRefresh:true,onUpdate(self){
+ const i=self.progress<.04?0:self.progress<.34?1:self.progress<.54?2:self.progress<.8?3:4;
+ document.querySelector('#phase')!.textContent=self.progress>=.8 && self.progress<.975?'Landing burn · returning home':phases[i];
+ document.querySelector('.phase-count')!.textContent=`0${i+1} / 05`;
+ document.querySelector('.flight-status')!.classList.toggle('in-space',self.progress>.38 && self.progress<.83);
+ }}});
+ tl.to('.booster-exhaust',{attr:{transform:'scale(1 1)'},duration:.08},0)
+ .to('.rocket-wrap',{y:'-13vh',rotation:9,duration:.24},0)
+ .to('.ground',{y:300,opacity:0,duration:.18},0)
+ .to('.orbit',{rotation:35,y:120,duration:.5},0)
+ .to('.sky-glow',{opacity:0,duration:.2},.15)
+ .to('.flight-world',{backgroundColor:'#101c24',duration:.2},.25)
+ .to('.stars',{opacity:1,duration:.15},.28)
+ .to('.planet',{opacity:1,y:-60,duration:.18},.3)
+ .to('.rocket-wrap',{rotation:25,scale:.82,duration:.18},.24)
+ .to('.booster',{y:140,x:-32,rotation:-18,transformOrigin:'50% 50%',duration:.18},.34)
+ .to('.booster-exhaust',{attr:{transform:'scale(1 0)'},duration:.04},.34)
+ .to('.upper-stage',{y:-70,x:25,duration:.15},.35)
+ .to('.upper-exhaust',{attr:{transform:'scale(1 1)'},duration:.08},.36)
+ .to('.payload',{autoAlpha:1,duration:.04},.48)
+ .to('.fairing-left',{x:-80,y:-25,rotation:-25,opacity:0,duration:.13},.48)
+ .to('.fairing-right',{x:80,y:-25,rotation:25,opacity:0,duration:.13},.48)
+  .to('.payload',{y:-65,x:()=>window.innerWidth<=760?-200:-20,duration:.12},.52)
+ .to('.solar-left',{attr:{transform:'scale(1 1)'},duration:.055,ease:'power2.inOut'},.565)
+ .to('.solar-right',{attr:{transform:'scale(1 1)'},duration:.055,ease:'power2.inOut'},.575)
+ .to('.solar-tip-left',{attr:{transform:'scale(1 1)'},duration:.05,ease:'power2.inOut'},.605)
+ .to('.solar-tip-right',{attr:{transform:'scale(1 1)'},duration:.05,ease:'power2.inOut'},.615)
+ .to('.upper-exhaust',{attr:{transform:'scale(1 0)'},duration:.05},.53)
+ .to('.upper-stage',{y:-320,x:150,opacity:0,duration:.1},.73)
+ .to('.rocket-wrap',{rotation:0,y:'-22vh',scale:1,duration:.16,ease:'power1.inOut'},.66)
+ .to('.booster',{y:0,x:0,rotation:0,duration:.16,ease:'power1.inOut'},.66)
+ .to('.planet',{opacity:0,y:100,duration:.15},.72)
+ .to('.stars',{opacity:0,duration:.13},.76)
+ .to('.flight-world',{backgroundColor:'#ecece7',duration:.16},.76)
+ .to('.ground',{y:0,opacity:1,duration:.1,ease:'power2.out'},.74)
+ .to('.leg-left',{attr:{transform:'rotate(0 116 452)'},duration:.08,ease:'power2.out'},.82)
+ .to('.leg-right',{attr:{transform:'rotate(0 184 452)'},duration:.08,ease:'power2.out'},.82)
+ .to('.booster-exhaust',{attr:{transform:'scale(.8 .65)'},duration:.035},.8)
+ .to('.rocket-wrap',{y:0,duration:.14,ease:'power2.out'},.835)
+ .to('.booster-exhaust',{attr:{transform:'scale(.5 .14)'},duration:.115,ease:'power2.out'},.835)
+ .to('.booster-exhaust',{attr:{transform:'scale(.35 0)'},duration:.025},.95)
+ .to({}, {duration:.025},.975);
+ });
+}
+media.add('(prefers-reduced-motion: no-preference)',()=>{if(!paused) setup();return()=>{context?.revert();document.documentElement.classList.remove('flight-active');};});
+if(matchMedia('(prefers-reduced-motion: reduce)').matches){paused=true;button.textContent='Play motion';button.setAttribute('aria-pressed','true');}
+button.addEventListener('click',()=>{paused=!paused;button.textContent=paused?'Play motion':'Pause motion';button.setAttribute('aria-pressed',String(paused));if(paused){context?.revert();document.documentElement.classList.remove('flight-active');document.querySelector('#phase')!.textContent='Flight paused';}else setup();});
+document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()=>ScrollTrigger.refresh()));
+</script>
+<style is:global>
+*{box-sizing:border-box}html{margin:0;scroll-behavior:smooth;scroll-padding-top:95px}body{margin:0;background:#ecece7;color:#202b30;font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}button{font:inherit}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #d74e26;outline-offset:6px}::selection{background:#ed6b42;color:white}.skip{position:fixed;top:-80px;left:20px;z-index:99;background:#fff;padding:15px}.skip:focus{top:10px}header{height:92px;position:absolute;inset:0 0 auto;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 5.5%;border-bottom:1px solid #263a3b20}.wordmark{font-size:32px;font-weight:800;letter-spacing:-3px}.wordmark span{color:#de532c;font-size:27px;margin-left:4px}nav{display:flex;gap:36px;font-size:13px}nav a:hover,.header-link:hover{color:#c44724}.header-link{font-size:13px}.header-link span{margin-left:20px;color:#d4502b}main{position:relative}.flight-world{--rocket-right:10%;--rocket-width:34vh;--pad-width:clamp(150px,26vw,350px);position:fixed;inset:0;overflow:hidden;background:#ecece7;pointer-events:none}.sky-glow{position:absolute;width:850px;height:850px;top:-120px;right:-180px;background:radial-gradient(ellipse,#fefdf7 0%,#e7e9e2 45%,transparent 70%)}.orbit{position:absolute;border:1px solid #899a992b;border-radius:50%;width:760px;height:760px;right:-170px;top:2%;transform:rotate(-25deg)}.orbit-two{width:570px;height:570px;right:-75px;top:15%}.orbit-one:after{content:'';position:absolute;inset:45px;border:1px dashed #899a9929;border-radius:50%}.rocket-wrap{position:absolute;z-index:1;right:var(--rocket-right);bottom:-4vh;width:var(--rocket-width);height:79.333333vh;transform-origin:50% 55%;filter:drop-shadow(18px 14px 14px #172c3528)}.rocket{width:100%;height:100%;overflow:visible}.payload{visibility:hidden}.ground{position:absolute;bottom:0;right:0;width:100%;height:13vh;background:linear-gradient(180deg,#aeb8b24a,transparent);border-top:1px solid #7d8b8355}.pad{position:absolute;right:calc(var(--rocket-right) + var(--rocket-width)/2 - var(--pad-width)/2);top:-22px;width:var(--pad-width);height:44px;border:1px solid #9aa5a1;border-radius:50%;background:#d8ddd6;box-shadow:0 8px 0 #bbc3bd;display:grid;place-items:center}.pad:before{content:'';position:absolute;inset:6px;border:1px dashed #8d9991;border-radius:50%}.pad span{font-size:17px;letter-spacing:8px;color:#8b9890;transform:scaleY(.5)}.stars{position:absolute;inset:0;opacity:0}.stars i{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%}.planet{position:absolute;right:-40%;bottom:-95vw;width:130vw;height:110vw;border-radius:50%;background:radial-gradient(ellipse at 40% 0%,#789a9c 0%,#345465 8%,#182e3c 26%,#111e28 48%);box-shadow:0 -6px 22px #b1e1e055,0 -1px 3px #e0ffff;opacity:0}.chapter{position:relative;min-height:110svh;padding:120px 5.5%;display:flex;align-items:center}.intro{min-height:100svh;padding-top:135px;padding-bottom:140px;align-items:center}.intro-copy{width:75%;position:relative;z-index:2}.eyebrow{font-family:Consolas,monospace;text-transform:uppercase;letter-spacing:1.7px;font-size:10px;margin:0 0 30px;color:#667470}h1{font-size:clamp(46px,6.7vw,108px);line-height:1.02;letter-spacing:-.065em;font-weight:500;margin:0 0 34px}h1 span{color:#7b8580}.lede{font-size:16px;line-height:1.7;color:#606b66;margin-bottom:33px}.text-link{display:inline-flex;font-size:12px;align-items:center;gap:30px;border-bottom:1px solid #8d9890;padding-bottom:12px}.text-link span{color:#d6512b;font-size:19px}.hero-bottom{position:absolute;bottom:36px;left:5.5%;right:5.5%;display:flex;justify-content:space-between;font-family:Consolas,monospace;font-size:9px;letter-spacing:1.4px}.scroll-hint{display:flex;gap:35px}.vehicle-label{position:absolute;right:4%;top:31%;font-size:11px;line-height:1.6}.vehicle-label>span{font-family:Consolas,monospace;font-size:8px;color:#77837d;letter-spacing:2px}.copy{max-width:570px;width:48%;position:relative;z-index:2}h2{font-size:clamp(42px,4.6vw,72px);line-height:1.04;font-weight:500;letter-spacing:-.055em;margin:0 0 32px}h2 em{font-style:normal;color:#df6c47}.copy>p:not(.eyebrow){font-size:15px;line-height:1.8;color:#697670;max-width:460px}.copy>p.large-copy{font-size:21px;line-height:1.5;color:inherit}.signature{font-size:20px;margin-top:40px;letter-spacing:-.6px}.signature span{display:block;font-size:10px;color:#78847b;margin-top:9px;letter-spacing:.4px}.research,.approach{color:#f0f2e9;background:linear-gradient(90deg,#101c24 0%,#101c24ee 35%,transparent 80%)}.research .eyebrow,.approach .eyebrow{color:#a8b9b8}.research .copy>p:not(.large-copy):not(.eyebrow),.approach .copy p{color:#aabbbb}.research-facts{display:flex;gap:50px;margin:32px 0}.research-facts strong{display:block;font-size:36px;font-weight:400;letter-spacing:-1px}.research-facts span{display:block;font-size:10px;color:#a8b9b8;margin-top:8px}details{border-top:1px solid #829e9b55;padding-top:20px;font-size:13px}summary{cursor:pointer;display:flex;justify-content:space-between;list-style:none}summary span{color:#ed885f}details p{line-height:1.7;color:#b7c8c8}.method{display:flex;gap:25px;margin:30px 0}.method>span{font-family:Consolas,monospace;font-size:10px;color:#df8562;padding-top:5px}.method h3{font-size:19px;font-weight:400;letter-spacing:-.4px;margin:0 0 9px}.method p{font-size:14px;line-height:1.65;margin:0;max-width:395px}.contact{min-height:100svh;padding-bottom:150px}.contact .copy{width:60%;max-width:740px}.contact-link{font-size:19px;display:inline-flex;gap:60px;margin-top:25px;padding-bottom:15px;border-bottom:1px solid #7d8c82}.contact-link span{color:#d9562e}.replay{display:block;width:fit-content;font-size:11px;color:#69766b;margin-top:30px}footer{position:absolute;bottom:30px;left:5.5%;right:5.5%;display:flex;justify-content:space-between;font-size:10px;color:#627266}.flight-status{position:fixed;bottom:76px;right:5.5%;z-index:8;display:flex;align-items:center;gap:10px;font-family:Consolas,monospace;font-size:9px;color:#344c40}.status-dot{width:5px;height:5px;background:#d65c32;border-radius:50%}.phase-count{margin-left:15px;color:#6d7e72}.flight-status button{background:transparent;border:0;border-left:1px solid #8a9b8855;color:inherit;font-size:9px;padding:5px 0 5px 12px;cursor:pointer}.flight-status.in-space{color:#c5d8d2}.in-space .phase-count{color:#a6bcb3}@media(min-width:1600px){.copy{margin-left:5%}.flight-world{--rocket-right:14%}}@media(max-width:760px){header{height:76px;padding:0 6%}nav{gap:18px;font-size:11px}.header-link{display:none}.chapter{padding:110px 7% 80px;min-height:115svh;align-items:flex-start}.intro{min-height:100svh;padding-top:120px}.intro-copy{width:100%}h1{font-size:clamp(42px,8.6vw,64px);letter-spacing:-.055em}.eyebrow{font-size:8px;letter-spacing:1.2px;margin-bottom:22px}.lede{font-size:13px;max-width:290px}.text-link{font-size:10px;gap:18px}.flight-world{--rocket-right:-2%;--rocket-width:24vh}.rocket-wrap{height:56vh;bottom:1vh;opacity:.9}.orbit{right:-400px}.orbit-two{right:-300px}.ground{width:100%}.vehicle-label{display:none}.hero-bottom{bottom:26px;font-size:7px}.hero-bottom>span:first-child{max-width:120px;line-height:1.8}.copy{width:78%;max-width:500px}h2{font-size:41px}.copy>p:not(.eyebrow){font-size:13px;line-height:1.7}.copy>p.large-copy{font-size:18px}.research .copy,.approach .copy{width:82%}.research-facts{gap:27px}.research-facts strong{font-size:29px}.research-facts span{font-size:8px}.method{gap:15px;margin:25px 0}.method h3{font-size:16px}.method p{font-size:12px}.contact .copy{width:95%}.contact{min-height:100svh}.contact h2{font-size:40px}.contact-link{font-size:16px}.flight-status{bottom:60px;right:6%;font-size:8px;gap:7px}.phase-count{display:none}.flight-status button{font-size:8px}footer{font-size:8px;gap:20px;bottom:20px}footer span:last-child{max-width:130px;text-align:right}.planet{bottom:-45vh;width:200vw;height:100vh}.research,.approach{background:linear-gradient(90deg,#101c24f5 0%,#101c24e0 48%,transparent 90%)}.about .copy{background:linear-gradient(90deg,#ecece7f0,#ecece7b0,transparent)}.contact .copy{background:linear-gradient(90deg,#ecece7ec,#ecece7b0,transparent)}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.research,.approach{color:#202b30}.research .eyebrow,.approach .eyebrow,.research .copy>p:not(.large-copy):not(.eyebrow),.approach .copy p,.research-facts span,.method p,details p{color:#57675e}.research,.approach{background:transparent}.chapter{min-height:90svh}}
+/* Secondary loops never transform the scroll-controlled nozzle or wing hinges. */
+.vent,.rcs,.signal-ring,.pad-dust{opacity:0}
+.vent-puff{fill:#c5d0cd}.signal-ring{transform-box:fill-box;transform-origin:center}
+.pad-light{position:absolute;top:17px;width:3px;height:3px;background:#d5754d;border-radius:50%}.pad-light-left{left:10%}.pad-light-right{right:10%}
+.pad-dust{position:absolute;inset:0;pointer-events:none}.pad-dust i{position:absolute;left:48%;top:8px;width:24px;height:9px;border-radius:50%;background:#aeb9b0;filter:blur(3px)}
+@media(prefers-reduced-motion:no-preference){
+.flight-active .vehicle-beacon,.flight-active .pad-light{animation:beacon-glow 3.7s ease-in-out infinite}
+.flight-active[data-flight="preflight"] .vent{opacity:1}
+.flight-active[data-flight="preflight"] .vent-puff{animation:vent-drift 3.8s ease-out infinite}
+.flight-active .vent-late{animation-delay:1.9s!important}
+.flight-active[data-flight="ascent"] .flame-core,.flight-active[data-flight="landing"] .flame-core{animation:engine-shimmer .22s ease-in-out infinite alternate}
+.flight-active[data-flight="separation"] .rcs,.flight-active[data-flight="orbit"] .rcs{opacity:1}
+.flight-active .rcs-puff{animation:attitude-puff 5s ease-out infinite}
+.flight-active[data-flight="orbit"] .satellite-drift{animation:satellite-float 7s ease-in-out infinite alternate}
+.flight-active[data-flight="orbit"] .sat-beacon{animation:beacon-glow 2.8s ease-in-out infinite}
+.flight-active[data-flight="orbit"] .signal-ring{animation:radio-pulse 4.5s ease-out infinite}
+.flight-active .signal-late{animation-delay:2.25s!important}
+.flight-active[data-flight="landing"] .pad-dust{opacity:.45}
+.flight-active[data-flight="landing"] .pad-dust i{animation:dust-drift 2.7s ease-out infinite}
+.flight-active .pad-dust i:nth-child(2){animation-delay:-1.3s;--dust-direction:-1}
+.flight-active .pad-dust i:nth-child(3){animation-delay:-.7s}
+.flight-active .pad-dust i:nth-child(4){animation-delay:-2s;--dust-direction:-1}
+}
+@keyframes beacon-glow{0%,65%,100%{opacity:.3}75%,82%{opacity:1}}
+@keyframes vent-drift{0%{transform:translate(0,0) scale(.5);opacity:0}15%{opacity:.5}100%{transform:translate(28px,-9px) scale(3);opacity:0}}
+@keyframes engine-shimmer{from{opacity:.65}to{opacity:1}}
+@keyframes attitude-puff{0%,8%,18%,100%{opacity:0}10%,13%{opacity:.5}}
+@keyframes satellite-float{from{transform:translate(0,0)}to{transform:translate(-2px,3px)}}
+@keyframes radio-pulse{0%{transform:scale(1);opacity:0}10%{opacity:.4}100%{transform:scale(4);opacity:0}}
+@keyframes dust-drift{0%{transform:translateX(0) scale(.4);opacity:0}20%{opacity:.45}100%{transform:translateX(calc(85px * var(--dust-direction,1))) scale(2.5);opacity:0}}
+</style>
+</body>
+</html>
 
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const title = document.querySelector('[data-anime="hero-title"]');
-      if (title) {
-        animate(title, {
-          opacity: [0, 1],
-          translateY: [24, 0],
-          duration: 900,
-          ease: eases.outExpo,
-        });
-      }
 
-      const grid = document.querySelector('[data-anime="project-grid"]');
-      if (grid) {
-        const cards = grid.querySelectorAll('[data-anime-item]');
-        const io = new IntersectionObserver((entries) => {
-          if (entries[0].isIntersecting) {
-            animate(cards, {
-              opacity: [0, 1],
-              translateY: [32, 0],
-              delay: stagger(70, { from: 'first' }),
-              duration: 700,
-              ease: eases.outExpo,
-            });
-            io.disconnect();
-          }
-        }, { threshold: 0.1 });
-        io.observe(grid);
-        cards.forEach((card) => {
-          card.addEventListener('mouseenter', () => {
-            animate(card, { translateY: -6, duration: 260, ease: eases.outQuad });
-          });
-          card.addEventListener('mouseleave', () => {
-            animate(card, { translateY: 0, duration: 260, ease: eases.outQuad });
-          });
-        });
-      }
-    }
-  </script>
-</BaseLayout>
