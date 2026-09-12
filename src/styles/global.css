@@ -267,17 +267,51 @@ section { padding: var(--section-gap) 0; }
   margin-top: 0.3rem;
 }
 
-/* Hero icon — the per-project signature mark, ported from the homepage grid */
+/* Hero icon — the per-project signature mark, ported from the homepage grid.
+   Each project gets one small, continuous, GPU-cheap loop (transform/opacity
+   only — no scroll-tied motion), started once the entrance animation lands. */
 .hero-icon {
   color: var(--accent);
-  margin-bottom: 1.75rem;
+  margin-bottom: 2rem;
   display: block;
   opacity: 0;
 }
 .hero-icon svg {
-  width: 40px; height: 40px;
+  width: 72px; height: 72px;
   fill: none; stroke: currentColor;
-  stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round;
+  stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round;
+  overflow: visible;
+}
+
+/* VIOT — aperture rings breathing, out of phase */
+.hero-icon--viot .ring { transform-box: fill-box; transform-origin: center; animation: icon-ring-pulse 2.8s ease-in-out infinite; }
+.hero-icon--viot .ring-inner { animation-delay: .5s; }
+@keyframes icon-ring-pulse { 0%, 100% { opacity: .45; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
+
+/* Pulsed-thruster time series / smart ambulance — a heartbeat-monitor tick */
+.hero-icon--n2o-rcs-icaetm .pulse-line,
+.hero-icon--smart-ambulance-gateway .pulse-line { transform-box: fill-box; transform-origin: center; animation: icon-tick 2.2s ease-in-out infinite; }
+@keyframes icon-tick { 0%, 40%, 100% { transform: scaleY(1); } 20% { transform: scaleY(1.12); } }
+.hero-icon--smart-ambulance-gateway .beacon { animation: icon-blink 1.6s ease-in-out infinite; }
+@keyframes icon-blink { 0%, 55%, 100% { opacity: .3; } 75% { opacity: 1; } }
+
+/* Turbulence closure / qsim-studio — a slow continuous spin */
+.hero-icon--turbulence-closure-icmai .spin-group,
+.hero-icon--qsim-studio .spin-group { transform-box: fill-box; transform-origin: center; animation: icon-spin 7s linear infinite; }
+@keyframes icon-spin { to { transform: rotate(360deg); } }
+
+/* Rocket nozzle FEA — exhaust flicker */
+.hero-icon--mmm-ansys-runner .flicker { animation: icon-flicker 1.6s ease-in-out infinite; }
+@keyframes icon-flicker { 0%, 100% { opacity: .5; } 50% { opacity: 1; } }
+
+/* ProfNet — nodes pulsing in sequence, like a relationship graph refreshing */
+.hero-icon--profnet .node { transform-box: fill-box; transform-origin: center; animation: icon-node-pulse 2.4s ease-in-out infinite; }
+.hero-icon--profnet .node-2 { animation-delay: .3s; }
+.hero-icon--profnet .node-3 { animation-delay: .6s; }
+@keyframes icon-node-pulse { 0%, 100% { opacity: .55; transform: scale(1); } 50% { opacity: 1; transform: scale(1.18); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-icon * { animation: none !important; }
 }
 
 /* ── Hypothesis cards ─────────────────────────────── */

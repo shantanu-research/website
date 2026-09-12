@@ -258,7 +258,7 @@ document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()
 @keyframes dust-drift{0%{transform:translateX(0) scale(.4);opacity:0}20%{opacity:.45}100%{transform:translateX(calc(85px * var(--dust-direction,1))) scale(2.5);opacity:0}}
 </style>
 <style>
-.portfolio{display:block;color:#f0f2e9;background:linear-gradient(90deg,#101c24 0%,#101c24ee 35%,transparent 80%);min-height:auto;padding:120px 5.5%}
+.portfolio{display:block;color:#f0f2e9;background:#101c24;min-height:auto;padding:120px 5.5%;isolation:isolate}
 .portfolio-head{max-width:640px;position:relative;z-index:2}
 .portfolio-head .eyebrow{color:#a8b9b8}
 .portfolio-head .large-copy{color:#aabbbb;font-size:16px;line-height:1.7;max-width:460px}
