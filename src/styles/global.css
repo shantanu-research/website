@@ -127,12 +127,12 @@ code {
 section { padding: var(--section-gap) 0; }
 .section-inner {
   display: grid;
-  grid-template-columns: 13rem 1fr;
+  grid-template-columns: 13rem minmax(0, 1fr);
   gap: 0 3.5rem;
   align-items: start;
 }
 @media (max-width: 768px) {
-  .section-inner { grid-template-columns: 1fr; gap: 1.5rem 0; }
+  .section-inner { grid-template-columns: minmax(0, 1fr); gap: 1.5rem 0; }
 }
 .section-label-col { padding-top: 0.2rem; }
 

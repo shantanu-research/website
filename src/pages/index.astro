@@ -96,6 +96,7 @@ const base = import.meta.env.BASE_URL;
   <section class="chapter about" id="about"><div class="copy"><p class="eyebrow">The person behind the projects</p><h2>Hi, I’m<br/>Shantanu.</h2><p class="large-copy">A second-year mechanical engineering student aiming at propulsion engineering — and building toward it from every angle I can reach.</p><p>I’m at PVG’s College of Engineering, Technology and Management in Pune, India. Propulsion is the destination, not a single method: some weeks that's a plasma simulation, others a thruster's structural design, an embedded sensor gateway, or a machine-learned turbulence model. The throughline is the aim, not the tool.</p><p>For me, every project is a way of asking a better question. Then letting the work answer it.</p><div class="signature">Shantanu Pawar<span>Second-year Mechanical Engineering · Propulsion, in progress</span></div></div></section>
   <section class="chapter research" id="research"><div class="copy"><p class="eyebrow">Flagship research / VIOT</p><h2>Small interactions.<br/>Far-reaching<br/><em>consequences.</em></h2><p class="large-copy">A longer journey starts at the surface.</p><p>I created the Virtual Ion-Optics Testbed to investigate how carbon coatings affect erosion in the NASA NSTAR ion thruster. It connects the motion of a plasma to what happens when a single ion meets a surface.</p><div class="research-facts"><div><strong>36</strong><span>simulation campaign runs</span></div><div><strong>3 scales</strong><span>plasma · surface · material</span></div></div><details><summary>Inside the research <span>+</span></summary><p>The study compares molybdenum grids with graphene and graphene nanoplatelet coatings. Nanoplatelets reduced simulated erosion, while monolayer graphene introduced an additional erosion channel. Field emission remains a critical tradeoff.</p></details><a class="text-link" style="margin-top:28px;" href={`${base}projects/`}>VIOT is the flagship, not the whole story — one of seven <span>↗</span></a></div></section>
   <section class="chapter portfolio" id="portfolio">
+    <div class="portfolio-flight-window" aria-hidden="true"><span>Payload deployment / solar-array extension</span></div>
     <div class="portfolio-head">
       <p class="eyebrow">Everything else in flight</p>
       <h2>Seven threads.<br/>One <em>aim.</em></h2>
@@ -172,15 +173,14 @@ function setup() {
  // Fixed nozzle translation stays on the parent; only local exhaust length changes.
  gsap.set('.booster-exhaust, .upper-exhaust', {attr:{transform:'scale(1 0)',visibility:'visible'}});
 
-  const tl = gsap.timeline({defaults:{ease:'none'}, onUpdate(){
+  const tl = gsap.timeline({paused:true, defaults:{ease:'none'}, onUpdate(){
    const p=this.progress();
    document.documentElement.dataset.flight=p<.035?'preflight':p<.34?'ascent':p<.54?'separation':p<.78?'orbit':p<.975?'landing':'landed';
- }, scrollTrigger:{trigger:'main',start:'top top',end:'bottom bottom',scrub:0.65,invalidateOnRefresh:true,onUpdate(self){
- const i=self.progress<.04?0:self.progress<.34?1:self.progress<.54?2:self.progress<.8?3:4;
- document.querySelector('#phase')!.textContent=self.progress>=.8 && self.progress<.975?'Landing burn · returning home':phases[i];
+ const i=p<.04?0:p<.34?1:p<.54?2:p<.8?3:4;
+ document.querySelector('#phase')!.textContent=p>=.8 && p<.975?'Landing burn · returning home':phases[i];
  document.querySelector('.phase-count')!.textContent=`0${i+1} / 05`;
- document.querySelector('.flight-status')!.classList.toggle('in-space',self.progress>.38 && self.progress<.83);
- }}});
+ document.querySelector('.flight-status')!.classList.toggle('in-space',p>.38 && p<.83);
+ }});
  tl.to('.booster-exhaust',{attr:{transform:'scale(1 1)'},duration:.08},0)
  .to('.rocket-wrap',{y:'-13vh',rotation:9,duration:.24},0)
  .to('.ground',{y:300,opacity:0,duration:.18},0)
@@ -197,15 +197,15 @@ function setup() {
  .to('.payload',{autoAlpha:1,duration:.04},.48)
  .to('.fairing-left',{x:-80,y:-25,rotation:-25,opacity:0,duration:.13},.48)
  .to('.fairing-right',{x:80,y:-25,rotation:25,opacity:0,duration:.13},.48)
-  .to('.payload',{y:-65,x:()=>window.innerWidth<=760?-200:-20,duration:.12},.52)
+ .to('.payload',{y:-65,x:()=>window.innerWidth<=760?-170:-20,duration:.12},.52)
  .to('.solar-left',{attr:{transform:'scale(1 1)'},duration:.055,ease:'power2.inOut'},.565)
  .to('.solar-right',{attr:{transform:'scale(1 1)'},duration:.055,ease:'power2.inOut'},.575)
  .to('.solar-tip-left',{attr:{transform:'scale(1 1)'},duration:.05,ease:'power2.inOut'},.605)
  .to('.solar-tip-right',{attr:{transform:'scale(1 1)'},duration:.05,ease:'power2.inOut'},.615)
  .to('.upper-exhaust',{attr:{transform:'scale(1 0)'},duration:.05},.53)
  .to('.upper-stage',{y:-320,x:150,opacity:0,duration:.1},.73)
- .to('.rocket-wrap',{rotation:0,y:'-22vh',scale:1,duration:.16,ease:'power1.inOut'},.66)
- .to('.booster',{y:0,x:0,rotation:0,duration:.16,ease:'power1.inOut'},.66)
+ .to('.rocket-wrap',{rotation:0,y:'-22vh',scale:1,duration:.1,ease:'power1.inOut'},.72)
+ .to('.booster',{y:0,x:0,rotation:0,duration:.1,ease:'power1.inOut'},.72)
  .to('.planet',{opacity:0,y:100,duration:.15},.72)
  .to('.stars',{opacity:0,duration:.13},.76)
  .to('.flight-world',{backgroundColor:'#ecece7',duration:.16},.76)
@@ -217,9 +217,27 @@ function setup() {
  .to('.booster-exhaust',{attr:{transform:'scale(.5 .14)'},duration:.115,ease:'power2.out'},.835)
  .to('.booster-exhaust',{attr:{transform:'scale(.35 0)'},duration:.025},.95)
  .to({}, {duration:.025},.975);
+ // Anchor the flight to chapters: adding project cards must not move deployment
+ // out of its viewing window or send the satellite home before the list ends.
+ let stops: number[] = [];
+ const beats = [0, .24, .36, .48, .67, .72, .84, 1];
+ const measure = () => {
+   const top = (id: string) => document.querySelector<HTMLElement>(id)!.offsetTop;
+   stops = [0, top('#about'), top('#research'), top('#portfolio') - innerHeight * .2,
+     top('#portfolio') + innerHeight * .48, top('#approach') - innerHeight * .25,
+     top('#contact'), document.documentElement.scrollHeight - innerHeight];
+ };
+ measure();
+ ScrollTrigger.create({trigger:'main',start:'top top',end:'bottom bottom',onRefresh:measure,onUpdate(){
+   const y = window.scrollY;
+   let index = stops.findIndex((end, i) => i > 0 && y <= end);
+   if (index < 0) index = stops.length - 1;
+   const fraction = gsap.utils.clamp(0, 1, (y - stops[index - 1]) / Math.max(1, stops[index] - stops[index - 1]));
+   tl.progress(beats[index - 1] + fraction * (beats[index] - beats[index - 1]));
+ }});
  });
 }
-media.add('(prefers-reduced-motion: no-preference)',()=>{if(!paused) setup();return()=>{context?.revert();document.documentElement.classList.remove('flight-active');};});
+media.add({desktop:'(min-width:761px) and (prefers-reduced-motion:no-preference)',mobile:'(max-width:760px) and (prefers-reduced-motion:no-preference)'},()=>{if(!paused) setup();return()=>{context?.revert();document.documentElement.classList.remove('flight-active');};});
 if(matchMedia('(prefers-reduced-motion: reduce)').matches){paused=true;button.textContent='Play motion';button.setAttribute('aria-pressed','true');}
 button.addEventListener('click',()=>{paused=!paused;button.textContent=paused?'Play motion':'Pause motion';button.setAttribute('aria-pressed',String(paused));if(paused){context?.revert();document.documentElement.classList.remove('flight-active');document.querySelector('#phase')!.textContent='Flight paused';}else setup();});
 document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()=>ScrollTrigger.refresh()));
@@ -258,11 +276,15 @@ document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()
 @keyframes dust-drift{0%{transform:translateX(0) scale(.4);opacity:0}20%{opacity:.45}100%{transform:translateX(calc(85px * var(--dust-direction,1))) scale(2.5);opacity:0}}
 </style>
 <style>
-.portfolio{display:block;color:#f0f2e9;background:#101c24;min-height:auto;padding:120px 5.5%;isolation:isolate}
+.portfolio{display:block;color:#f0f2e9;background:transparent;min-height:auto;padding:120px 5.5%}
+.portfolio-flight-window{display:none}
+:global(html:not(.flight-active)) .portfolio{background:#101c24}
+:global(html:not(.flight-active)) .portfolio-flight-window{display:none}
 .portfolio-head{max-width:640px;position:relative;z-index:2}
 .portfolio-head .eyebrow{color:#a8b9b8}
 .portfolio-head .large-copy{color:#aabbbb;font-size:16px;line-height:1.7;max-width:460px}
-.portfolio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5px;margin-top:56px;background:#263a3b40;border:1px solid #263a3b40;position:relative;z-index:2}
+.portfolio-head,.portfolio-grid{width:58%}
+.portfolio-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5px;margin-top:56px;background:#263a3b40;border:1px solid #263a3b40;position:relative;z-index:2}
 .portfolio-card{display:flex;flex-direction:column;gap:10px;padding:26px 24px;background:#0d1620;transition:background .25s ease}
 .portfolio-card:hover,.portfolio-card:focus-visible{background:#152332}
 .portfolio-icon{color:#df8562}
@@ -270,9 +292,18 @@ document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()
 .portfolio-card h3{font-size:16px;font-weight:500;letter-spacing:-.2px;margin:2px 0 0;color:#f0f2e9}
 .portfolio-card p{font-size:12.5px;line-height:1.6;color:#9fb0af;margin:0;flex-grow:1}
 .portfolio-status{font-family:Consolas,monospace;font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#df8562}
-@media(max-width:760px){.portfolio{padding:90px 6%}.portfolio-grid{grid-template-columns:1fr;margin-top:36px}}
+@media(max-width:760px){.portfolio{padding:0 6% 90px}.portfolio-flight-window{display:flex;height:95svh;align-items:flex-end;padding-bottom:32px;font:9px Consolas,monospace;color:#a8b9b8;letter-spacing:1px}.portfolio-head,.portfolio-grid{width:100%}.portfolio-head{padding:24px 0;background:linear-gradient(90deg,#101c24f5,#101c24b0,transparent)}.portfolio-grid{grid-template-columns:1fr;margin-top:36px}}
+@media(prefers-reduced-motion:reduce){.portfolio{background:#101c24}.portfolio-flight-window{display:none}}
+@media(min-width:761px){
+  :global(.flight-world){--rocket-width:min(34vh,24vw)}
+  :global(.rocket-wrap){height:calc(var(--rocket-width) * 7 / 3)}
+}
+@media(max-width:760px){
+  :global(.flight-world){--rocket-right:8%}
+  :global(.flight-status){left:6%;right:6%;bottom:14px;justify-content:space-between;padding:12px;background:#ecece7ed;border:1px solid #829e9b55}
+  :global(.flight-status.in-space){background:#101c24ed}
+}
+@media(max-width:380px){:global(header nav){gap:10px;font-size:10px}:global(.wordmark){font-size:28px}}
 </style>
 </body>
 </html>
-
-

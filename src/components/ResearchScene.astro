@@ -1,0 +1,221 @@
+---
+import { researchScenes } from '../lib/research-scenes';
+interface Props { subject: string; }
+const { subject } = Astro.props;
+const scene = researchScenes[subject];
+const flowLines = Array.from({length: 8}, (_, i) => `M35 ${95+i*25} C155 ${95+i*25} 185 ${70+i*17} 265 ${75+i*16} S390 ${90+i*22} 565 ${95+i*25}`);
+---
+{scene && <section class="research-scene" data-research-scene data-kind={scene.kind} aria-label={scene.title}>
+  <div class="scene-heading"><p class="label">Inside the work</p><h2>{scene.title}</h2></div>
+  <div class="scene-layout">
+    <div class="scene-visual">
+      <div class="scene-toolbar"><span class="scene-mode">Concept in motion</span><button type="button" data-scene-toggle aria-pressed="false">Pause animation</button></div>
+      <svg class="scene-canvas" viewBox="0 0 600 400" role="img" aria-label={scene.caption}>
+        <defs><marker id="scene-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#ed986b"/></marker></defs>
+        <g class="scene-grid">{Array.from({length:11},(_,i)=><line x1={50+i*50} x2={50+i*50} y1="40" y2="360"/>)}{Array.from({length:7},(_,i)=><line x1="30" x2="570" y1={50+i*50} y2={50+i*50}/>)}</g>
+        {scene.kind === 'ions' && <>
+          <text x="45" y="65">DISCHARGE PLASMA</text><text x="250" y="65">SCREEN / ACCEL GRIDS</text><text x="440" y="65">EXTRACTED ION BEAM</text>
+          <path class="scene-solid" d="M270 90h24v75h-24zM270 235h24v80h-24zM316 90h16v75h-16zM316 235h16v80h-16z"/>
+          <text x="282" y="84" text-anchor="middle">SCREEN</text><text x="324" y="100" text-anchor="middle">ACCEL</text>
+          {[0,1,2,3,4].map(i=><><path data-track class="scene-track" d={`M45 ${120+i*38} C180 ${120+i*38} 225 ${175+i*12} 290 ${175+i*12} S450 ${135+i*32} 555 ${130+i*34}`}/><circle data-traveler class="scene-particle" r="3.8" cx="0" cy="0"/></>)}
+          <path data-track class="scene-return" d="M480 250Q425 318 335 278L318 250"/><circle data-traveler class="scene-particle scene-secondary" r="5" cx="0" cy="0"/>
+          {[0,1,2,3,4].map(i=><circle data-eject class="scene-particle" cx="324" cy="250" r="2.4" data-dx={40+i*12} data-dy={-45+i*23}/>)}
+          <circle data-halo class="scene-halo" cx="324" cy="250" r="16"/>
+          <text x="342" y="244">CEX ION → ACCEL-GRID WALL</text><text x="363" y="262">SPUTTERED ATOMS</text>
+        </>}
+        {(scene.kind === 'pulse' || scene.kind === 'nozzle') && <>
+          {scene.kind === 'pulse' ? <><text x="45" y="65">N₂O FEED</text><text x="154" y="65">CATALYST BED</text><text x="286" y="65">CHAMBER / THROAT</text><text x="458" y="65">NOZZLE EXPANSION</text><text x="145" y="282">HEAT RETAINED</text></> : <><text x="45" y="65">HOT GAS</text><text x="300" y="65">THROAT</text><text x="458" y="65">NOZZLE EXPANSION</text></>}
+          <path class="scene-body" d="M45 130H230Q270 130 303 178H337Q390 140 555 108V126Q395 156 342 192H296Q260 149 230 149H45ZM45 250H230Q270 250 303 202H337Q390 240 555 272V254Q395 224 342 188H296Q260 231 230 231H45Z"/>
+          {scene.kind === 'pulse' && <><rect data-valve class="scene-accent" x="98" y="153" width="10" height="73"/>{Array.from({length:18},(_,i)=><circle data-heat class="scene-bed" cx={160+(i%6)*13} cy={165+Math.floor(i/6)*25} r="4"/>)}</>}
+          {[0,1,2,3,4].map(i=><><path data-track class="scene-track" d={`M45 ${159+i*15}Q250 ${159+i*15} 320 190T555 ${143+i*24}`}/><circle data-traveler class="scene-particle" cx="0" cy="0" r="3"/></>)}
+          <path data-draw class="scene-trace" d={scene.kind === 'pulse' ? 'M45 335H100V305Q118 275 140 305L147 335H190V305Q208 275 230 305L237 335H280V305Q298 275 320 305L327 335H370V305Q388 275 410 305L417 335H555' : 'M45 335C170 335 220 310 290 292Q320 284 355 301T555 335'}/>
+          <text x="45" y="373">{scene.kind === 'pulse' ? 'PULSE TRAIN / CATALYST-BED THERMAL MEMORY' : 'THERMAL LOADING / SCHEMATIC'}</text>
+        </>}
+        {scene.kind === 'flow' && <>
+          <text x="40" y="60">ATTACHED BOUNDARY LAYER</text><text x="355" y="60">SEPARATED SHEAR LAYER / REATTACHMENT</text>
+          <path class="scene-solid" d="M30 330H155C190 330 205 268 250 268S300 330 360 330H570V360H30Z"/>
+          {flowLines.map(d=><><path data-track class="scene-track" d={d}/><circle data-traveler class="scene-particle" cx="0" cy="0" r="3"/></>)}
+          <g data-eddy class="scene-eddy"><ellipse cx="370" cy="297" rx="43" ry="16"/><path d="M400 302Q370 315 341 300Q370 282 399 292" marker-end="url(#scene-arrow)"/><circle cx="409" cy="292" r="3"/></g>
+          <path class="scene-return" d="M285 280Q335 260 450 322"/>
+          <text x="347" y="345">RECIRCULATION BUBBLE</text>
+        </>}
+        {(scene.kind === 'telemetry' || scene.kind === 'pipeline') && <>
+          <text x="50" y="70">{scene.kind === 'telemetry' ? 'DEVICES' : 'ION OPTICS'}</text><text x="255" y="70">{scene.kind === 'telemetry' ? 'GATEWAY' : 'CEX + NEUTRALS'}</text><text x="462" y="70">{scene.kind === 'telemetry' ? 'HOSPITAL' : 'SURFACE RESPONSE'}</text>
+          {[110,300,490].map((x,i)=><><rect class="scene-body" x={x-55} y="135" width="110" height="125" rx="8"/><circle data-halo class="scene-halo" cx={x} cy="197" r="30"/><text class="scene-glyph" x={x} y="207" text-anchor="middle">{scene.kind === 'telemetry' ? ['+','↗','+'][i] : ['Xe⁺','CEX','Mo'][i]}</text></>)}
+          {[0,1,2].map(i=><><path data-track class="scene-track" d={`M165 ${174+i*23}H245M355 ${174+i*23}H435`}/><circle data-traveler class="scene-particle" cx="0" cy="0" r={i===0?5:3}/></>)}
+          <path data-draw class="scene-trace" d="M50 325H120L140 307L155 340L176 290L190 325H275L294 305L309 338L329 290L344 325H550"/>
+          <text x="50" y="373">{scene.kind === 'telemetry' ? 'DETECT → PRIORITIZE → FORWARD' : 'TRANSPORT → IMPACT → RESPONSE'}</text>
+        </>}
+        {scene.kind === 'quantum' && <>
+          <circle class="scene-orbit" cx="300" cy="205" r="130"/><ellipse class="scene-orbit" cx="300" cy="205" rx="130" ry="43"/><ellipse class="scene-orbit" cx="300" cy="205" rx="48" ry="130"/>
+          <path class="scene-axis" d="M300 48V359M145 255L455 155M170 151L435 259"/>
+          <path class="scene-return" d="M318 76A130 130 0 0 1 420 156" marker-end="url(#scene-arrow)"/>
+          <g data-state-vector data-traveler class="scene-vector"><path d="M300 205L372 103l-3 21m3-21-19 10"/><circle cx="372" cy="103" r="6"/></g>
+          <text x="315" y="60">|0⟩</text><text x="315" y="359">|1⟩</text><text x="50" y="373">PURE QUBIT / Rᵧ(θ) ROTATION</text>
+        </>}
+        {scene.kind === 'network' && <>
+          {[[95,120],[105,280],[300,90],[490,120],[490,290],[305,325]].map(([x,y])=><><path data-track class="scene-track" d={`M${x} ${y}L300 205`}/><circle data-traveler class="scene-particle" cx="0" cy="0" r="3"/><circle class="scene-body" cx={x} cy={y} r="22"/><circle data-halo class="scene-halo" cx={x} cy={y} r="30"/></>)}
+          <circle class="scene-body" cx="300" cy="205" r="48"/><text class="scene-glyph" x="300" y="215" text-anchor="middle">↗</text>
+          <text x="40" y="60">PEOPLE / CONTEXT / CONNECTIONS</text><text x="40" y="375">LOCAL KNOWLEDGE, CONNECTED</text>
+        </>}
+        {scene.kind === 'lunar' && <>
+          <path class="scene-solid" d="M25 315Q300 145 575 315V375H25Z"/>{[110,220,345,460].map((x,i)=><ellipse class="scene-orbit" cx={x} cy={290+(i%2)*26} rx="30" ry="11"/>)}
+          <path data-track class="scene-track" d="M70 155Q300 15 530 155"/><g data-traveler><path class="scene-accent" d="M-12-10h24v20h-24zM-47-7h28v14h-28zM19-7h28v14H19z"/><path class="scene-scan" d="M0 12l-40 145h80z"/></g>
+          <text x="40" y="60">ORBITAL IMAGING</text>
+        </>}
+        {scene.kind === 'flight' && <>
+          <path class="scene-solid" d="M30 345Q300 280 570 345V370H30Z"/><path data-track class="scene-track" d="M65 315Q220-55 535 275"/><g data-traveler><path class="scene-accent" d="M-15-7L17 0-15 7-9 0Z"/></g><text x="40" y="60">TRAJECTORY / PROPAGATION</text>
+        </>}
+        {scene.kind === 'math' && <>
+          <path class="scene-axis" d="M65 55V335H565"/><path data-track data-draw class="scene-trace" d="M65 280C140 280 140 100 225 100S315 300 390 250S485 110 555 115"/><circle data-traveler class="scene-particle" cx="0" cy="0" r="6"/><text x="85" y="60">A RELATIONSHIP, CONSTRUCTED</text>
+        </>}
+      </svg>
+      <p class="scene-caption">{scene.caption}</p>
+      <div class="scene-progress" aria-hidden="true"><span></span></div>
+    </div>
+    <div class="scene-steps">{scene.steps.map(([title,body],i)=><div class="scene-step" data-scene-step><span class="scene-step-index">0{i+1}</span><h3>{title}</h3><p>{body}</p></div>)}</div>
+  </div>
+</section>}
+
+<script>
+  import { animate, createTimeline, stagger, svg } from 'animejs';
+  const preference = matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll<HTMLElement>('[data-research-scene]').forEach(root => {
+    const q = (selector: string) => root.querySelectorAll<SVGElement>(selector);
+    const button = root.querySelector<HTMLButtonElement>('[data-scene-toggle]')!;
+    let paused = preference.matches;
+    let inView = false;
+    let timelines: ReturnType<typeof createTimeline>[] = [];
+    let animations: ReturnType<typeof animate>[] = [];
+    const stop = () => { timelines.forEach(t => t.revert()); animations.forEach(a => a.revert()); timelines = []; animations = []; };
+    const sync = () => {
+      const running = !paused && inView && !document.hidden;
+      [...timelines, ...animations].forEach(a => running ? a.play() : a.pause());
+      button.textContent = paused ? 'Play animation' : 'Pause animation';
+      button.setAttribute('aria-pressed', String(paused));
+    };
+    const setup = () => {
+      stop();
+      // Leave a complete static diagram when motion is reduced or paused.
+      q('[data-traveler]').forEach((traveler, i) => {
+        const path = q('[data-track]')[i] as SVGPathElement;
+        if (!path) return;
+        const point = path.getPointAtLength(path.getTotalLength() * .55);
+        traveler.setAttribute('transform', `translate(${point.x} ${point.y})`);
+      });
+      if (paused) { sync(); return; }
+      q('[data-traveler]').forEach((traveler, i) => {
+        const path = q('[data-track]')[i];
+        if (!path) return;
+        traveler.removeAttribute('transform');
+        animations.push(animate(traveler, { ...svg.createMotionPath(path), duration: root.dataset.kind === 'pulse' ? 1900 : 3800 + i * 190,
+          delay: i * 170, loop: true, ease: 'linear', autoplay: false }));
+      });
+      if (q('[data-draw]').length) animations.push(animate(svg.createDrawable(q('[data-draw]')), { draw: ['0 0', '0 1'], duration: 3400, loop: true, loopDelay: 1400, ease: 'inOutSine', autoplay: false }));
+      if (q('[data-halo]').length) animations.push(animate(q('[data-halo]'), { scale: [1, 1.65], opacity: [.55, 0], duration: 2300, delay: stagger(210), loop: true, ease: 'outSine', autoplay: false }));
+      if (q('[data-eddy]').length) animations.push(animate(q('[data-eddy]'), { scaleX: [1, 1.2], scaleY: [1, .8], duration: 1900, alternate: true, loop: true, ease: 'inOutSine', autoplay: false }));
+      if (q('[data-state-vector]').length) animations.push(animate(q('[data-state-vector]'), { rotate: [-28, 32], duration: 3200, alternate: true, loop: true, ease: 'inOutSine', autoplay: false }));
+      q('[data-eject]').forEach(particle => animations.push(animate(particle, { translateX: [0, Number(particle.dataset.dx)], translateY: [0, Number(particle.dataset.dy)], opacity: [1, 0], duration: 1600, loop: true, loopDelay: 1800, autoplay: false, ease: 'outQuad' })));
+      if (q('[data-valve]').length) {
+        const pulse = createTimeline({loop: true, autoplay: false, defaults: {ease: 'inOutSine'}})
+          .add(q('[data-valve]'), {scaleY: [1, .18], duration: 350}, 0)
+          .add(q('[data-heat]'), {fill: ['#59768c', '#df8562'], duration: 800, delay: stagger(25)}, 180)
+          .add(q('[data-valve]'), {scaleY: 1, duration: 350}, 1100)
+          .add(q('[data-heat]'), {fill: '#59768c', duration: 1300}, 1600);
+        timelines.push(pulse);
+      }
+      sync();
+    };
+    const observer = new IntersectionObserver(entries => { inView = entries[0].isIntersecting; sync(); }, {threshold: .05});
+    observer.observe(root.querySelector('.scene-visual')!);
+    button.addEventListener('click', () => {
+      paused = !paused;
+      if (!paused && !animations.length && !timelines.length) setup();
+      else sync();
+    });
+    preference.addEventListener('change', () => { paused = preference.matches; setup(); });
+    document.addEventListener('visibilitychange', sync);
+    window.addEventListener('pagehide', () => { inView = false; sync(); });
+    window.addEventListener('pageshow', () => { observer.unobserve(root.querySelector('.scene-visual')!); observer.observe(root.querySelector('.scene-visual')!); });
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-scene-step]'));
+    const stepObserver = new IntersectionObserver(entries => {
+      for (const entry of entries) if (entry.isIntersecting) {
+        const index = steps.indexOf(entry.target as HTMLElement);
+        steps.forEach((step, i) => step.classList.toggle('is-current', i === index));
+        (root.querySelector('.scene-progress span') as HTMLElement).style.width = `${(index + 1) / steps.length * 100}%`;
+      }
+    }, {rootMargin: '-25% 0px -35% 0px', threshold: 0});
+    steps.forEach(step => stepObserver.observe(step));
+    setup();
+  });
+
+  // Animate actual chart geometry on entry, preserving its final data values.
+  const reveals: ReturnType<typeof animate>[] = [];
+  const revealObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) if (entry.isIntersecting) {
+      revealObserver.unobserve(entry.target);
+      if (preference.matches) continue;
+      if (entry.target.matches('.chart-wrap')) {
+        const bars = entry.target.querySelectorAll('.chart-bar');
+        const lines = entry.target.querySelectorAll('.chart-line');
+        if (bars.length) reveals.push(animate(bars, {scaleY: [0, 1], duration: 900, delay: stagger(65), ease: 'outCubic'}));
+        if (lines.length) reveals.push(animate(svg.createDrawable(lines), {draw: ['0 0','0 1'], duration: 1500, ease: 'inOutSine'}));
+      } else reveals.push(animate(entry.target, {translateY: [18, 0], duration: 650, ease: 'outCubic'}));
+    }
+  }, {threshold: .12});
+  document.querySelectorAll('.chart-wrap, .section-inner, .callout').forEach(el => revealObserver.observe(el));
+  preference.addEventListener('change', () => { if (preference.matches) reveals.splice(0).forEach(a => a.revert()); });
+</script>
+
+<style>
+  .research-scene { padding: 4rem 0 5rem; border-top: 1px solid var(--line); }
+  .scene-heading { max-width: 700px; margin-bottom: 3rem; }
+  .scene-heading h2 { font-family: var(--font-body); color: var(--fg); text-transform: none; font-size: clamp(2.2rem, 4.5vw, 4rem); line-height: 1.08; letter-spacing: -.045em; font-weight: 400; margin-top: 1.2rem; }
+  .scene-layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 5%; align-items: start; }
+  .scene-visual { position: sticky; top: 100px; min-width: 0; background: #101c24; color: #c9d9d7; padding: 22px; }
+  .scene-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; font: 10px var(--font-mono); }
+  .scene-mode { letter-spacing: .07em; text-transform: uppercase; }
+  .scene-toolbar button { font: inherit; color: #edaa8e; border: 1px solid #58716f; padding: 8px 10px; background: transparent; cursor: pointer; }
+  .scene-toolbar button:hover { background: #263a3b; }
+  .scene-toolbar button:focus-visible { outline: 2px solid #edaa8e; outline-offset: 4px; }
+  .scene-canvas { display: block; width: 100%; height: auto; margin: 18px 0; overflow: hidden; }
+  .scene-canvas text { fill: #acc1be; font: 10px var(--font-mono); letter-spacing: 1px; }
+  .scene-canvas .scene-glyph { font-size: 30px; fill: #edaa8e; }
+  .scene-grid { stroke: #30464c; stroke-width: .6; opacity: .5; }
+  .scene-track { fill: none; stroke: #719aab; stroke-width: 1.25; opacity: .65; }
+  .scene-return { fill: none; stroke: #edaa8e; stroke-width: 1.3; stroke-dasharray: 4 5; }
+  .scene-solid { fill: #597078; stroke: #a7bab7; stroke-width: 1; }
+  .scene-body { fill: #1e323d; stroke: #9cb6b9; stroke-width: 1.4; }
+  .scene-accent, .scene-particle { fill: #ed986b; }
+  .scene-secondary { fill: #a4d3e0; }
+  .scene-bed { fill: #59768c; }
+  .scene-halo { fill: none; stroke: #e3916d; stroke-width: 1.1; transform-box: fill-box; transform-origin: center; }
+  .scene-trace, .scene-vector { fill: none; stroke: #ed986b; stroke-width: 2; }
+  .scene-vector { transform-origin: 300px 205px; }
+  .scene-orbit { fill: none; stroke: #719aab; stroke-width: 1.1; }
+  .scene-axis { fill: none; stroke: #799392; stroke-width: 1; }
+  .scene-eddy { fill: none; stroke: #ed986b; transform-box: fill-box; transform-origin: center; }
+  .scene-scan { fill: #ed986b; opacity: .14; }
+  [data-valve] { transform-box: fill-box; transform-origin: center; }
+  .scene-caption { font-size: 11px; line-height: 1.65; color: #acbfbd; max-width: 65ch; }
+  .scene-progress { height: 2px; background: #30464c; margin-top: 24px; }
+  .scene-progress span { display: block; width: 33.333%; height: 100%; background: #ed986b; transition: width .5s ease; }
+  .scene-step { min-height: 30vh; padding: 35px 0; border-top: 1px solid var(--line); }
+  .scene-step-index { font: 11px var(--font-mono); color: var(--muted); }
+  .scene-step h3 { font-size: clamp(1.3rem, 2.1vw, 1.8rem); font-weight: 400; letter-spacing: -.025em; margin: 16px 0 12px; }
+  .scene-step p { color: var(--muted); font-size: 15px; line-height: 1.75; }
+  .scene-step.is-current .scene-step-index { color: var(--accent); }
+  @media(max-width:760px) {
+    .research-scene { padding: 3rem 0; }
+    .scene-heading { margin-bottom: 2rem; }
+    .scene-layout { grid-template-columns: 1fr; gap: 1.5rem; }
+    .scene-visual { position: relative; top: auto; padding: 16px; }
+    .scene-toolbar { font-size: 9px; }
+    .scene-step { min-height: 0; padding: 25px 0; }
+    .scene-steps { display: grid; gap: 0; }
+  }
+  @media(prefers-reduced-motion:reduce) { .scene-progress span { transition: none; } }
+</style>
+<style is:global>
+  .chart-bar { transform-box: fill-box; transform-origin: center bottom; }
+</style>

@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import projects from '../../../data/projects.json';
 import GroupedBarChart from '../../components/GroupedBarChart.astro';
 import LineChart from '../../components/LineChart.astro';
+import ResearchScene from '../../components/ResearchScene.astro';
 
 export function getStaticPaths() {
   return (projects as any[])
@@ -48,6 +49,8 @@ const ICONS: Record<string, string> = {
         </div>
       )}
     </section>
+
+    <ResearchScene subject={project.id} />
 
     {d.overview?.length > 0 && (
       <section>

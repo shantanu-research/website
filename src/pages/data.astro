@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GroupedBarChart from '../components/GroupedBarChart.astro';
+import ResearchScene from '../components/ResearchScene.astro';
 ---
 <BaseLayout title="Data & Results — VIOT Research" page="data" description="Erosion campaign, EBS lifetime analysis, and Fowler-Nordheim breakdown risk.">
   <div class="container">
@@ -9,6 +10,8 @@ import GroupedBarChart from '../components/GroupedBarChart.astro';
       <h1>Data &amp; Findings</h1>
       <p class="hero-sub">Primary erosion campaign, electron-backstreaming lifetime analysis, and Fowler–Nordheim breakdown risk assessment. All 36 runs fully reproducible from <code>VIOT3/campaign_results.json</code>.</p>
     </section>
+
+    <ResearchScene subject="data" />
 
     <section>
       <div class="section-inner">
