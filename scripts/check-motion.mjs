@@ -36,6 +36,21 @@ async function deployment(page) {
   assert.match(result.phase, /Payload deployed/);
   assert.match(result.unfolded, /scale\(1 1\)/);
 }
+async function touchdown(page) {
+  await page.evaluate(() => scrollTo({top: document.documentElement.scrollHeight, behavior: 'instant'}));
+  await wait(page);
+  const result = await page.evaluate(() => ({
+    phase: document.querySelector('#phase').textContent,
+    flight: document.documentElement.dataset.flight,
+    landingDistance: document.documentElement.scrollHeight - innerHeight - document.querySelector('#contact').offsetTop,
+    viewportHeight: innerHeight,
+    legs: [document.querySelector('.leg-left'), document.querySelector('.leg-right')].map(el => el.getAttribute('transform')),
+  }));
+  assert.match(result.phase, /Touchdown/);
+  assert.equal(result.flight, 'landed');
+  assert.ok(result.landingDistance >= result.viewportHeight * .9, `Landing needs more scroll distance: ${JSON.stringify(result)}`);
+  assert.deepEqual(result.legs, ['rotate(0 116 452)', 'rotate(0 184 452)']);
+}
 try {
   for (const [width, height] of [[320,720],[390,844],[768,1024],[1024,768],[1440,900]]) {
     const page = await browser.newPage({viewport: {width,height}});
@@ -51,11 +66,12 @@ try {
     });
     await page.waitForTimeout(400);
     await deployment(page);
+    await touchdown(page);
     await page.evaluate(() => scrollTo({top:0,behavior:'instant'}));
     await wait(page);
     assert.equal(await page.locator('.payload').evaluate(el => getComputedStyle(el).visibility), 'hidden', 'Reverse scroll must stow the payload');
     await page.close();
-    console.log(`PASS flight visibility, deployment timing, reverse scroll: ${width}×${height}`);
+    console.log(`PASS flight visibility, deployment timing, touchdown, reverse scroll: ${width}×${height}`);
   }
   for (const width of [390,1440]) {
     const page = await browser.newPage({viewport:{width,height:900}});

@@ -304,6 +304,11 @@ document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()
   :global(.flight-status.in-space){background:#101c24ed}
 }
 @media(max-width:380px){:global(header nav){gap:10px;font-size:10px}:global(.wordmark){font-size:28px}}
+/* Reserve a full viewport after the final chapter begins so touchdown is an
+   actual scroll sequence, rather than being squeezed into the page boundary. */
+.contact{min-height:200svh;align-items:flex-start}
+.contact .copy{position:sticky;top:22svh}
+@media(max-width:760px){.contact{min-height:200svh}.contact .copy{top:15svh}}
 </style>
 </body>
 </html>
