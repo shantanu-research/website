@@ -15,7 +15,7 @@ const base = import.meta.env.BASE_URL;
 <a class="skip" href="#about">Skip to about me</a>
 <header>
   <a class="wordmark" href="#home" aria-label="Shantanu Pawar home">SP<span>↗</span></a>
-  <nav aria-label="Main navigation"><a href="#about">About</a><a href="#research">Research</a><a href="#approach">Approach</a><a href={`${base}projects/`}>Projects</a></nav>
+  <nav aria-label="Main navigation"><a href="#about">About</a><a href="#research">Research</a><a href="#portfolio">Work</a><a href="#approach">Approach</a><a href={`${base}projects/`}>Projects</a></nav>
   <a class="header-link" href="#contact">Let’s connect <span>↗</span></a>
 </header>
 <main id="home">
@@ -89,13 +89,82 @@ const base = import.meta.env.BASE_URL;
     <div class="ground"><div class="pad"><span>SP</span><i class="pad-light pad-light-left"></i><i class="pad-light pad-light-right"></i><div class="pad-dust"><i></i><i></i><i></i><i></i></div></div></div>
   </div>
   <section class="chapter intro" id="intro">
-    <div class="intro-copy"><p class="eyebrow">Shantanu Pawar / Mechanical engineering</p><h1>Grounded in physics.<br/><span>Built for beyond.</span></h1><p class="lede">I explore the physics that takes us further.<br/>From ion–surface interactions to the future of propulsion.</p><a class="text-link" href="#about">Meet the mind behind the mission <span>↗</span></a></div>
+    <div class="intro-copy"><p class="eyebrow">Shantanu Pawar / Second-year Mechanical Engineering</p><h1>Grounded in physics.<br/><span>Built for beyond.</span></h1><p class="lede">I'm working toward a career in propulsion engineering.<br/>Ten projects in, one small idea at a time.</p><a class="text-link" href="#about">Meet the mind behind the mission <span>↗</span></a></div>
     <div class="hero-bottom"><span>ENGINEER. RESEARCHER. EXPLORER.</span><span class="scroll-hint">Scroll to launch <span>↓</span></span></div>
     <div class="vehicle-label"><span>THE FLIGHT</span><p>A little curiosity.<br/>A lot of thrust.</p></div>
   </section>
-  <section class="chapter about" id="about"><div class="copy"><p class="eyebrow">The person behind the physics</p><h2>Hi, I’m<br/>Shantanu.</h2><p class="large-copy">A mechanical engineer drawn to the questions that don’t have easy answers.</p><p>I’m at PVG’s College of Engineering, Technology and Management in Pune, India. My work brings computational engineering, plasma physics, and materials science together to understand how space propulsion can last longer.</p><p>For me, building a simulation is a way of asking a better question. Then letting the physics answer.</p><div class="signature">Shantanu Pawar<span>Author of the Virtual Ion-Optics Testbed</span></div></div></section>
-  <section class="chapter research" id="research"><div class="copy"><p class="eyebrow">Flagship research / VIOT</p><h2>Small interactions.<br/>Far-reaching<br/><em>consequences.</em></h2><p class="large-copy">A longer journey starts at the surface.</p><p>I created the Virtual Ion-Optics Testbed to investigate how carbon coatings affect erosion in the NASA NSTAR ion thruster. It connects the motion of a plasma to what happens when a single ion meets a surface.</p><div class="research-facts"><div><strong>36</strong><span>simulation campaign runs</span></div><div><strong>3 scales</strong><span>plasma · surface · material</span></div></div><details><summary>Inside the research <span>+</span></summary><p>The study compares molybdenum grids with graphene and graphene nanoplatelet coatings. Nanoplatelets reduced simulated erosion, while monolayer graphene introduced an additional erosion channel. Field emission remains a critical tradeoff.</p></details><a class="text-link" style="margin-top:28px;" href={`${base}projects/`}>VIOT is one of twelve — see the full project index <span>↗</span></a></div></section>
-  <section class="chapter approach" id="approach"><div class="copy"><p class="eyebrow">How I work</p><h2>Follow the question.<br/><em>Test everything.</em></h2><div class="method"><span>01</span><div><h3>Start with the physics.</h3><p>Understand the mechanisms before choosing the model. Plasma transport, charge exchange, and material response.</p></div></div><div class="method"><span>02</span><div><h3>Build across scales.</h3><p>Connect GPU particle simulations, molecular dynamics, and custom Poisson solvers.</p></div></div><div class="method"><span>03</span><div><h3>Make it reproducible.</h3><p>Trace each result back to its parameters, assumptions, and verification. Keep the unexpected findings, too.</p></div></div></div></section>
+  <section class="chapter about" id="about"><div class="copy"><p class="eyebrow">The person behind the projects</p><h2>Hi, I’m<br/>Shantanu.</h2><p class="large-copy">A second-year mechanical engineering student aiming at propulsion engineering — and building toward it from every angle I can reach.</p><p>I’m at PVG’s College of Engineering, Technology and Management in Pune, India. Propulsion is the destination, not a single method: some weeks that's a plasma simulation, others a thruster's structural design, an embedded sensor gateway, or a machine-learned turbulence model. The throughline is the aim, not the tool.</p><p>For me, every project is a way of asking a better question. Then letting the work answer it.</p><div class="signature">Shantanu Pawar<span>Second-year Mechanical Engineering · Propulsion, in progress</span></div></div></section>
+  <section class="chapter research" id="research"><div class="copy"><p class="eyebrow">Flagship research / VIOT</p><h2>Small interactions.<br/>Far-reaching<br/><em>consequences.</em></h2><p class="large-copy">A longer journey starts at the surface.</p><p>I created the Virtual Ion-Optics Testbed to investigate how carbon coatings affect erosion in the NASA NSTAR ion thruster. It connects the motion of a plasma to what happens when a single ion meets a surface.</p><div class="research-facts"><div><strong>36</strong><span>simulation campaign runs</span></div><div><strong>3 scales</strong><span>plasma · surface · material</span></div></div><details><summary>Inside the research <span>+</span></summary><p>The study compares molybdenum grids with graphene and graphene nanoplatelet coatings. Nanoplatelets reduced simulated erosion, while monolayer graphene introduced an additional erosion channel. Field emission remains a critical tradeoff.</p></details><a class="text-link" style="margin-top:28px;" href={`${base}projects/`}>VIOT is the flagship, not the whole story — one of ten <span>↗</span></a></div></section>
+  <section class="chapter portfolio" id="portfolio">
+    <div class="portfolio-head">
+      <p class="eyebrow">Everything else in flight</p>
+      <h2>Ten threads.<br/>One <em>aim.</em></h2>
+      <p class="large-copy">Propulsion engineering is the destination. These are the routes I'm testing to get there.</p>
+    </div>
+    <div class="portfolio-grid">
+      <a class="portfolio-card" href={`${base}viot/`}>
+        <span class="portfolio-icon" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="10"/><circle cx="14" cy="14" r="5"/><line x1="14" y1="2" x2="14" y2="7"/><line x1="14" y1="21" x2="14" y2="26"/></svg></span>
+        <h3>Virtual Ion-Optics Testbed</h3>
+        <p>Carbon-nanomaterial coatings for ion-thruster grid erosion — GPU plasma simulation to molecular dynamics.</p>
+        <span class="portfolio-status">Active — Phase V</span>
+      </a>
+      <a class="portfolio-card" href={`${base}projects/n2o-rcs-icaetm/`}>
+        <span class="portfolio-icon" aria-hidden="true"><svg viewBox="0 0 28 28"><polyline points="2,20 8,20 8,6 12,6 12,24 16,24 16,10 20,10 20,20 26,20"/></svg></span>
+        <h3>Pulsed N₂O Thruster Time Series</h3>
+        <p>A physics model of a pulsed monopropellant thruster, forecast with an LSTM against an ARIMA baseline.</p>
+        <span class="portfolio-status">ICAETM 2026 submission</span>
+      </a>
+      <a class="portfolio-card" href={`${base}projects/turbulence-closure-icmai/`}>
+        <span class="portfolio-icon" aria-hidden="true"><svg viewBox="0 0 28 28"><path d="M14 4a10 10 0 1 0 7 17"/><path d="M14 10a4.5 4.5 0 1 1-3.2 7.6"/></svg></span>
+        <h3>ML Turbulence Closure</h3>
+        <p>Tensor-basis neural nets vs. random forests for RANS closure, explained with spatial SHAP attribution.</p>
+        <span class="portfolio-status">ICMAI-MAC 2026</span>
+      </a>
+      <a class="portfolio-card" href={`${base}projects/smart-ambulance-gateway/`}>
+        <span class="portfolio-icon" aria-hidden="true"><svg viewBox="0 0 28 28"><polyline points="2,15 8,15 11,7 15,23 18,15 26,15"/><circle cx="23" cy="6" r="2"/></svg></span>
+        <h3>Smart Ambulance Gateway</h3>
+        <p>An ESP32 edge gateway that auto-detects medical BLE devices and triages data under bandwidth loss.</p>
+        <span class="portfolio-status">Verified end-to-end demo</span>
+      </a>
+      <a class="portfolio-card" href={`${base}projects/sih-ohrc-toolkit/`}>
+        <span class="portfolio-icon" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="13" cy="14" r="10"/><path d="M18 5.5a10 10 0 0 0 0 17 8 8 0 0 1 0-17z"/></svg></span>
+        <h3>Chandrayaan-2 Lunar Imagery Toolkit</h3>
+        <p>Pixel-accurate matching across three lunar imaging payloads with a 20–300× scale gap. SIH26166.</p>
+        <span class="portfolio-status">Hackathon build</span>
+      </a>
+      <a class="portfolio-card" href={`${base}projects/aerospace-multiphysics-pipeline/`}>
+        <span class="portfolio-icon" aria-hidden="true"><svg viewBox="0 0 28 28"><rect x="3" y="4" width="22" height="4.5"/><rect x="3" y="11.75" width="22" height="4.5"/><rect x="3" y="19.5" width="22" height="4.5"/></svg></span>
+        <h3>AeroSpace Multiphysics Pipeline</h3>
+        <p>Five GPU-chained physics stages from charge-exchange kinetics to field-emission risk, tuned for a laptop GPU.</p>
+        <span class="portfolio-status">GPU runs pending</span>
+      </a>
+      <a class="portfolio-card" href={`${base}projects/qsim-studio/`}>
+        <span class="portfolio-icon" aria-hidden="true"><svg viewBox="0 0 28 28"><ellipse cx="14" cy="14" rx="10" ry="10"/><ellipse cx="14" cy="14" rx="10" ry="4"/><line x1="14" y1="14" x2="21" y2="5"/></svg></span>
+        <h3>qsim-studio</h3>
+        <p>A from-scratch, GPU-accelerated quantum simulator — statevectors, gates, and a QASM-2 circuit IR.</p>
+        <span class="portfolio-status">185 tests passing</span>
+      </a>
+      <a class="portfolio-card" href={`${base}projects/mmm-ansys-runner/`}>
+        <span class="portfolio-icon" aria-hidden="true"><svg viewBox="0 0 28 28"><path d="M2 8 L12 13 L12 15 L2 20 M26 8 L16 13 L16 15 L26 20"/></svg></span>
+        <h3>Rocket Nozzle Throat Insert</h3>
+        <p>Thermo-structural FEA of a C-103 nozzle throat insert — defect sensitivity at 1400°C.</p>
+        <span class="portfolio-status">ME301 coursework</span>
+      </a>
+      <a class="portfolio-card" href={`${base}projects/profnet/`}>
+        <span class="portfolio-icon" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="7" cy="8" r="3"/><circle cx="21" cy="8" r="3"/><circle cx="14" cy="21" r="3"/><line x1="9.5" y1="9.5" x2="18.5" y2="9.5"/><line x1="8" y1="10.8" x2="12.5" y2="18.5"/><line x1="20" y1="10.8" x2="15.5" y2="18.5"/></svg></span>
+        <h3>ProfNet</h3>
+        <p>A local-first CRM for academic relationships — no cloud, no API keys, everything on-device.</p>
+        <span class="portfolio-status">Active</span>
+      </a>
+      <a class="portfolio-card" href={`${base}projects/manim-explainers/`}>
+        <span class="portfolio-icon" aria-hidden="true"><svg viewBox="0 0 28 28"><line x1="3" y1="24" x2="25" y2="24"/><line x1="3" y1="24" x2="3" y2="3"/><path d="M3 20 Q10 5 15 14 T25 7"/></svg></span>
+        <h3>Manim Explainers</h3>
+        <p>Animated explainer videos for a linear differential equations coursework unit, built with Manim.</p>
+        <span class="portfolio-status">Working scenes</span>
+      </a>
+    </div>
+  </section>
+  <section class="chapter approach" id="approach"><div class="copy"><p class="eyebrow">How I work</p><h2>Follow the question.<br/><em>Test everything.</em></h2><div class="method"><span>01</span><div><h3>Start with the physics.</h3><p>Understand the mechanisms before choosing the model — the physics changes by project, the discipline doesn't.</p></div></div><div class="method"><span>02</span><div><h3>Work across disciplines.</h3><p>Simulation, embedded hardware, machine learning, structural analysis — whatever the question in front of me needs.</p></div></div><div class="method"><span>03</span><div><h3>Make it reproducible.</h3><p>Trace each result back to its parameters, assumptions, and verification. Keep the unexpected findings, too.</p></div></div></div></section>
   <section class="chapter contact" id="contact"><div class="copy"><p class="eyebrow">Back on Earth. Looking ahead.</p><h2>Every mission starts<br/>with a <em>conversation.</em></h2><p class="large-copy">Propulsion. Simulation. An interesting question.<br/>Let’s see where it takes us.</p><a class="contact-link" href="https://github.com/shantanu-research">Find me on GitHub <span>↗</span></a><a class="replay" href="#home">↑ Replay the flight</a></div><footer><span>© 2026 Shantanu Pawar</span><span>Made with curiosity. Grounded in science.</span></footer></section>
   <aside class="flight-status" aria-label="Rocket flight phase"><span class="status-dot"></span><span id="phase">Ready for liftoff</span><span class="phase-count">01 / 05</span><button id="motion-toggle" type="button" aria-pressed="false">Pause motion</button></aside>
 </main>
@@ -205,6 +274,21 @@ document.querySelectorAll('details').forEach(el=>el.addEventListener('toggle',()
 @keyframes satellite-float{from{transform:translate(0,0)}to{transform:translate(-2px,3px)}}
 @keyframes radio-pulse{0%{transform:scale(1);opacity:0}10%{opacity:.4}100%{transform:scale(4);opacity:0}}
 @keyframes dust-drift{0%{transform:translateX(0) scale(.4);opacity:0}20%{opacity:.45}100%{transform:translateX(calc(85px * var(--dust-direction,1))) scale(2.5);opacity:0}}
+</style>
+<style>
+.portfolio{display:block;color:#f0f2e9;background:linear-gradient(90deg,#101c24 0%,#101c24ee 35%,transparent 80%);min-height:auto;padding:120px 5.5%}
+.portfolio-head{max-width:640px;position:relative;z-index:2}
+.portfolio-head .eyebrow{color:#a8b9b8}
+.portfolio-head .large-copy{color:#aabbbb;font-size:16px;line-height:1.7;max-width:460px}
+.portfolio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5px;margin-top:56px;background:#263a3b40;border:1px solid #263a3b40;position:relative;z-index:2}
+.portfolio-card{display:flex;flex-direction:column;gap:10px;padding:26px 24px;background:#0d1620;transition:background .25s ease}
+.portfolio-card:hover,.portfolio-card:focus-visible{background:#152332}
+.portfolio-icon{color:#df8562}
+.portfolio-icon svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.portfolio-card h3{font-size:16px;font-weight:500;letter-spacing:-.2px;margin:2px 0 0;color:#f0f2e9}
+.portfolio-card p{font-size:12.5px;line-height:1.6;color:#9fb0af;margin:0;flex-grow:1}
+.portfolio-status{font-family:Consolas,monospace;font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#df8562}
+@media(max-width:760px){.portfolio{padding:90px 6%}.portfolio-grid{grid-template-columns:1fr;margin-top:36px}}
 </style>
 </body>
 </html>

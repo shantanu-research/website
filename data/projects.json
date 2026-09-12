@@ -8,7 +8,7 @@
     "status": "Active — Phase V",
     "links": {
       "detail": "/viot/",
-      "repo": "https://github.com/chiku149/VIOT-Research"
+      "repo": "https://github.com/shantanu-research/VIOT-Research"
     },
     "thumbnail": null,
     "published": true
@@ -331,7 +331,7 @@
     "status": "Active",
     "links": {
       "detail": "/projects/profnet/",
-      "repo": "https://github.com/chiku149/profnet"
+      "repo": "https://github.com/shantanu-research/profnet"
     },
     "thumbnail": null,
     "published": true,
@@ -357,7 +357,7 @@
     "status": "Active",
     "links": { "detail": "/projects/cfd-learning-series/" },
     "thumbnail": null,
-    "published": true,
+    "published": false,
     "detail": {
       "tagline": "The full CFD workflow — geometry, meshing, solving, post-processing — taught through three canonical cases of rising complexity.",
       "overview": [
@@ -408,7 +408,7 @@
     "status": "Working scenes",
     "links": { "detail": "/projects/manim-explainers/" },
     "thumbnail": null,
-    "published": false,
+    "published": true,
     "detail": {
       "tagline": "Manim-rendered explainer videos for a linear differential equations coursework unit.",
       "overview": [
