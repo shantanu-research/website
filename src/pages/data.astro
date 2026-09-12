@@ -164,25 +164,4 @@ import GroupedBarChart from '../components/GroupedBarChart.astro';
     </section>
   </div>
 
-  <script>
-    import gsap from 'gsap';
-    import { ScrollTrigger } from 'gsap/ScrollTrigger';
-    gsap.registerPlugin(ScrollTrigger);
-
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      // Table row draw animation
-      document.querySelectorAll('[data-gsap="table"]').forEach((table) => {
-        const rows = table.querySelectorAll('tbody tr');
-        rows.forEach((row, i) => {
-          gsap.fromTo(row,
-            { opacity: 0, x: -16 },
-            {
-              scrollTrigger: { trigger: row, start: 'top 90%' },
-              opacity: 1, x: 0, duration: 0.4, ease: 'power2.out', delay: i * 0.06
-            }
-          );
-        });
-      });
-    }
-  </script>
 </BaseLayout>

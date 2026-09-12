@@ -168,21 +168,4 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
   </div>
 
-  <script>
-    import gsap from 'gsap';
-    import { ScrollTrigger } from 'gsap/ScrollTrigger';
-    gsap.registerPlugin(ScrollTrigger);
-
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      gsap.utils.toArray('.timeline-item').forEach((item: any, i: number) => {
-        gsap.fromTo(item,
-          { opacity: 0, x: -24 },
-          {
-            scrollTrigger: { trigger: item, start: 'top 88%' },
-            opacity: 1, x: 0, duration: 0.5, ease: 'power2.out', delay: i * 0.07
-          }
-        );
-      });
-    }
-  </script>
 </BaseLayout>

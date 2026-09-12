@@ -11,37 +11,23 @@ const base = import.meta.env.BASE_URL;
   <meta name="description" content={description} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-  <meta name="theme-color" content="#F4F4F0" />
+  <meta name="theme-color" content="#ecece7" />
   {noindex && <meta name="robots" content="noindex, nofollow" />}
   <title>{title}</title>
-  <script is:inline>
-    // Runs before first paint to avoid a flash of the wrong theme.
-    (function () {
-      try {
-        var stored = localStorage.getItem('theme');
-        if (stored === 'light' || stored === 'dark') {
-          document.documentElement.setAttribute('data-theme', stored);
-        }
-      } catch (e) {}
-    })();
-  </script>
+  <link rel="icon" href={`${base}favicon.svg`} />
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
 
   <nav class="nav" aria-label="Site navigation">
     <div class="nav-inner">
-      <a href={base} class="nav-logo" aria-label="Shantanu Pawar — home">S. PAWAR</a>
+      <a href={base} class="nav-logo" aria-label="Shantanu Pawar — home">SP<span style="color:var(--accent)">↗</span></a>
       <div class="nav-links" data-nav-links>
         <a href={base} aria-current={page === 'home' ? 'page' : undefined}>Home</a>
         <a href={`${base}projects/`} aria-current={page === 'projects' ? 'page' : undefined}>Projects</a>
         <a href={`${base}viot/`} aria-current={page === 'viot' ? 'page' : undefined}>VIOT</a>
         <a href={`${base}about/`} aria-current={page === 'about' ? 'page' : undefined}>About</a>
       </div>
-      <button type="button" class="theme-toggle" data-theme-toggle aria-label="Toggle dark mode">
-        <span class="icon-light" aria-hidden="true">☾</span>
-        <span class="icon-dark" aria-hidden="true">☀</span>
-      </button>
       <button type="button" class="nav-toggle" data-nav-toggle aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
         <span class="nav-toggle-bars" aria-hidden="true"></span>
       </button>
@@ -63,17 +49,6 @@ const base = import.meta.env.BASE_URL;
 
   <script is:inline>
     (function () {
-      var themeBtn = document.querySelector('[data-theme-toggle]');
-      if (themeBtn) {
-        themeBtn.addEventListener('click', function () {
-          var current = document.documentElement.getAttribute('data-theme');
-          var isDark = current === 'dark' || (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
-          var next = isDark ? 'light' : 'dark';
-          document.documentElement.setAttribute('data-theme', next);
-          try { localStorage.setItem('theme', next); } catch (e) {}
-        });
-      }
-
       var navToggle = document.querySelector('[data-nav-toggle]');
       var navLinks = document.querySelector('[data-nav-links]');
       if (navToggle && navLinks) {

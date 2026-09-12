@@ -164,7 +164,7 @@
     "status": "Hackathon build — SIH26166",
     "links": { "detail": "/projects/sih-ohrc-toolkit/" },
     "thumbnail": null,
-    "published": true,
+    "published": false,
     "detail": {
       "tagline": "Pixel-accurate correspondence across three lunar imaging payloads that never see the Moon the same way — 20–300× scale gaps, shifting shadows, near-featureless terrain.",
       "overview": [
@@ -192,7 +192,7 @@
     "status": "Physics + orchestration implemented — GPU PIC runs pending",
     "links": { "detail": "/projects/aerospace-multiphysics-pipeline/" },
     "thumbnail": null,
-    "published": true,
+    "published": false,
     "detail": {
       "tagline": "A five-stage GPU pipeline chaining charge-exchange kinetics to a full WarpX Particle-in-Cell simulation of the NSTAR gridded ion thruster, tuned to survive an 8 GB laptop GPU.",
       "overview": [
@@ -408,7 +408,7 @@
     "status": "Working scenes",
     "links": { "detail": "/projects/manim-explainers/" },
     "thumbnail": null,
-    "published": true,
+    "published": false,
     "detail": {
       "tagline": "Manim-rendered explainer videos for a linear differential equations coursework unit.",
       "overview": [

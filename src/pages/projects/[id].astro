@@ -13,10 +13,23 @@ export function getStaticPaths() {
 const { project } = Astro.props as { project: any };
 const d = project.detail;
 const base = import.meta.env.BASE_URL;
+
+const ICONS: Record<string, string> = {
+  'n2o-rcs-icaetm': '<svg viewBox="0 0 28 28"><polyline points="2,20 8,20 8,6 12,6 12,24 16,24 16,10 20,10 20,20 26,20"/></svg>',
+  'turbulence-closure-icmai': '<svg viewBox="0 0 28 28"><path d="M14 4a10 10 0 1 0 7 17"/><path d="M14 10a4.5 4.5 0 1 1-3.2 7.6"/></svg>',
+  'smart-ambulance-gateway': '<svg viewBox="0 0 28 28"><polyline points="2,15 8,15 11,7 15,23 18,15 26,15"/><circle cx="23" cy="6" r="2"/></svg>',
+  'sih-ohrc-toolkit': '<svg viewBox="0 0 28 28"><circle cx="13" cy="14" r="10"/><path d="M18 5.5a10 10 0 0 0 0 17 8 8 0 0 1 0-17z"/></svg>',
+  'aerospace-multiphysics-pipeline': '<svg viewBox="0 0 28 28"><rect x="3" y="4" width="22" height="4.5"/><rect x="3" y="11.75" width="22" height="4.5"/><rect x="3" y="19.5" width="22" height="4.5"/></svg>',
+  'qsim-studio': '<svg viewBox="0 0 28 28"><ellipse cx="14" cy="14" rx="10" ry="10"/><ellipse cx="14" cy="14" rx="10" ry="4"/><line x1="14" y1="14" x2="21" y2="5"/></svg>',
+  'mmm-ansys-runner': '<svg viewBox="0 0 28 28"><path d="M2 8 L12 13 L12 15 L2 20 M26 8 L16 13 L16 15 L26 20"/></svg>',
+  'profnet': '<svg viewBox="0 0 28 28"><circle cx="7" cy="8" r="3"/><circle cx="21" cy="8" r="3"/><circle cx="14" cy="21" r="3"/><line x1="9.5" y1="9.5" x2="18.5" y2="9.5"/><line x1="8" y1="10.8" x2="12.5" y2="18.5"/><line x1="20" y1="10.8" x2="15.5" y2="18.5"/></svg>',
+  'manim-explainers': '<svg viewBox="0 0 28 28"><line x1="3" y1="24" x2="25" y2="24"/><line x1="3" y1="24" x2="3" y2="3"/><path d="M3 20 Q10 5 15 14 T25 7"/></svg>',
+};
 ---
 <BaseLayout title={`${project.title} — Shantanu Pawar`} page="projects" description={project.description}>
   <div class="container">
     <section class="hero">
+      {ICONS[project.id] && <span class="hero-icon" data-hero-icon set:html={ICONS[project.id]} />}
       <p class="hero-eyebrow">{project.status}</p>
       <h1>{project.title}</h1>
       <p class="hero-sub">{d.tagline || project.description}</p>
@@ -192,38 +205,21 @@ const base = import.meta.env.BASE_URL;
   </div>
 
   <script>
-    import gsap from 'gsap';
-    import { ScrollTrigger } from 'gsap/ScrollTrigger';
-    gsap.registerPlugin(ScrollTrigger);
+    import { animate, eases } from 'animejs';
 
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      gsap.utils.toArray('[data-reveal]').forEach((el: any) => {
-        gsap.fromTo(el, { opacity: 0, y: 16 }, {
-          scrollTrigger: { trigger: el, start: 'top 90%' },
-          opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
+    const icon = document.querySelector('[data-hero-icon]') as HTMLElement | null;
+    if (icon) {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        icon.style.opacity = '1';
+      } else {
+        animate(icon, {
+          opacity: [0, 1],
+          scale: [0.6, 1],
+          rotate: [-8, 0],
+          duration: 650,
+          ease: eases.outElastic(1, 0.6),
         });
-      });
-      gsap.utils.toArray('.timeline-item').forEach((item: any, i: number) => {
-        gsap.fromTo(item, { opacity: 0, x: -24 }, {
-          scrollTrigger: { trigger: item, start: 'top 88%' },
-          opacity: 1, x: 0, duration: 0.5, ease: 'power2.out', delay: i * 0.06,
-        });
-      });
-      document.querySelectorAll('[data-gsap="table"]').forEach((table) => {
-        const rows = table.querySelectorAll('tbody tr');
-        rows.forEach((row, i) => {
-          gsap.fromTo(row, { opacity: 0, x: -16 }, {
-            scrollTrigger: { trigger: row, start: 'top 90%' },
-            opacity: 1, x: 0, duration: 0.4, ease: 'power2.out', delay: i * 0.05,
-          });
-        });
-      });
-      gsap.utils.toArray('.findings-list p').forEach((p: any, i: number) => {
-        gsap.fromTo(p, { opacity: 0, y: 12 }, {
-          scrollTrigger: { trigger: p, start: 'top 92%' },
-          opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: i * 0.08,
-        });
-      });
+      }
     }
   </script>
 </BaseLayout>
