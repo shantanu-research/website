@@ -1,0 +1,19 @@
+<section class="research-field" aria-label="From questions to evidence">
+  <div class="research-field-pin">
+    <div class="research-field-copy">
+      <p class="label">The research process</p>
+      <h2>Questions.<br />Models.<br /><em>Evidence.</em></h2>
+      <p>Across propulsion, computation, and engineering: turning a question into a model, and a model into something we can test.</p>
+      <span class="field-caption">Scroll to assemble the model ↓</span>
+    </div>
+    <div class="field-visual" aria-hidden="true">
+      <svg viewBox="0 0 600 600" class="field-svg">
+        <circle class="field-orbit" cx="300" cy="300" r="240" />
+        <circle class="field-orbit" cx="300" cy="300" r="170" />
+        <path class="field-cross" d="M300 25V575M25 300H575" />
+        {Array.from({length: 100}, (_, i) => <circle class="field-particle" cx={120 + (i % 10) * 40} cy={120 + Math.floor(i / 10) * 40} r={i % 11 === 0 ? 5 : 3} />)}
+      </svg>
+      <span class="field-caption">Conceptual model · not simulation data</span>
+    </div>
+  </div>
+</section>

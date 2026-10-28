@@ -1,0 +1,69 @@
+<div class="reading-progress" aria-hidden="true"></div>
+<script>
+  import { animate, onScroll, stagger } from 'animejs';
+  const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const animations: ReturnType<typeof animate>[] = [];
+  const observers: ReturnType<typeof onScroll>[] = [];
+  let intersection: IntersectionObserver | undefined;
+  function cleanup() {
+    intersection?.disconnect();
+    observers.splice(0).forEach(observer => observer.revert());
+    animations.splice(0).forEach(animation => animation.revert());
+  }
+  function setup() {
+    cleanup();
+    if (motionPreference.matches) return;
+    const progress = document.querySelector('.reading-progress');
+    if (progress) {
+      const observer = onScroll({ target: document.querySelector('main')!, enter: 'top top', leave: 'bottom bottom', sync: true });
+      observers.push(observer);
+      animations.push(animate(progress, { scaleX: [0, 1], ease: 'linear', autoplay: observer }));
+    }
+    const title = document.querySelector('[data-anime="hero-title"]');
+    if (title) animations.push(animate(title, { translateY: [30, 0], opacity: [.3, 1], duration: 950, ease: 'outExpo' }));
+    // Observe individual elements: long grids must not reveal offscreen cards at once.
+    intersection = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const element = entry.target;
+        animations.push(animate(element, { translateY: [36, 0], opacity: [.25, 1], duration: 850, ease: 'outExpo' }));
+        intersection?.unobserve(element);
+      }
+    }, { threshold: .08, rootMargin: '0px 0px -35px 0px' });
+    document.querySelectorAll('.project-card, [data-reveal], .timeline-item, .findings-list p').forEach(el => intersection?.observe(el));
+    const field = document.querySelector<HTMLElement>('.research-field');
+    if (field) {
+      const observer = onScroll({ target: field, enter: 'top top', leave: 'bottom bottom', sync: true });
+      observers.push(observer);
+      animations.push(animate('.field-particle', {
+        translateX: (_, i) => [Math.sin(i * 2.4) * 170, 0],
+        translateY: (_, i) => [Math.cos(i * 1.7) * 170, 0],
+        opacity: [.2, 1], scale: [.4, 1], delay: stagger(4), duration: 1000,
+        ease: 'inOutCubic', autoplay: observer,
+      }));
+    }
+  }
+  setup();
+  motionPreference.addEventListener('change', setup);
+  window.addEventListener('pagehide', cleanup);
+  window.addEventListener('pageshow', event => { if (event.persisted) setup(); });
+</script>
+<style is:global>
+  .reading-progress { position: fixed; inset: 0 0 auto; height: 3px; background: var(--accent); transform: scaleX(0); transform-origin: left; z-index: 200; pointer-events: none; }
+  .research-field { height: 170vh; position: relative; padding: 0; margin-bottom: 5rem; border-top: var(--border); }
+  .research-field-pin { position: sticky; top: 4rem; min-height: calc(100vh - 4rem); display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 3rem; }
+  .research-field-copy h2 { font-family: var(--font-display); font-size: clamp(2.8rem, 5.5vw, 5.5rem); line-height: 1.08; letter-spacing: -.045em; text-transform: none; color: var(--fg); margin: 1.5rem 0; }
+  .research-field-copy h2 em { font-family: var(--font-body); font-weight: 400; color: var(--accent); }
+  .research-field-copy > p:not(.label) { color: var(--muted); max-width: 35ch; }
+  .field-caption { display: block; margin-top: 2rem; font: .65rem var(--font-mono); color: var(--muted); letter-spacing: .06em; }
+  .field-visual { min-width: 0; text-align: center; }
+  .field-svg { width: 100%; overflow: visible; }
+  .field-orbit, .field-cross { fill: none; stroke: var(--accent); stroke-opacity: .17; stroke-width: 1; }
+  .field-cross { stroke-dasharray: 3 8; }
+  .field-particle { fill: var(--accent); transform-box: fill-box; transform-origin: center; }
+  .project-card { border-top: 2px solid transparent; transition: background .25s, border-color .25s, box-shadow .25s; }
+  .project-card:hover, .project-card:focus-within { border-top-color: var(--accent); box-shadow: inset 0 0 0 1px var(--chart-grid); }
+  @media(min-width: 900px) { .section-label-col { position: sticky; top: 6rem; } }
+  @media(max-width: 640px) { .research-field { height: 145vh; } .research-field-pin { gap: 1rem; grid-template-columns: 1fr; align-content: center; } .research-field-copy h2 { font-size: 2.5rem; } .field-visual { width: min(65vw, 280px); margin: auto; } .field-caption { margin-top: .7rem; } }
+  @media(prefers-reduced-motion: reduce) { .research-field { height: auto; padding: 3rem 0; } .research-field-pin { position: static; min-height: 0; } .reading-progress { display: none; } }
+</style>
