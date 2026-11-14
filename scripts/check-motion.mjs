@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 const playwrightModule = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const { chromium } = playwrightModule.chromium ? playwrightModule : playwrightModule.default;
-const base = process.env.MOTION_TEST_URL || 'http://localhost:4321/website/';
+const base = process.env.MOTION_TEST_URL || 'http://localhost:4321/';
 const channel = process.env.BROWSER_CHANNEL || (process.platform === 'win32' ? 'msedge' : undefined);
 const browser = await chromium.launch({ channel, headless: true });
 const projects = JSON.parse(await readFile(new URL('../data/projects.json', import.meta.url), 'utf8'));

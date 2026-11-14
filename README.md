@@ -51,10 +51,10 @@ To add/edit a project by hand instead, just edit `data/projects.json` directly a
 
 ## Deployment
 
-Every push to `main` triggers `.github/workflows/deploy.yml`, which runs `npm run build` and
-publishes `dist/` to GitHub Pages via `actions/deploy-pages`. No manual steps — commits from
-the admin panel trigger the same workflow and redeploy automatically within a couple of
-minutes.
+Hosted on Cloudflare Pages at `https://www.overdriveaerospace.us` (the bare domain forwards
+to `www`). Cloudflare's Git integration builds every push to `main` with `npm run build`
+(output `dist/`, `NODE_VERSION=22`). No manual steps — commits from the admin panel trigger
+the same build and redeploy automatically within a couple of minutes. Other branches get
+preview URLs on `*.pages.dev`.
 
-`astro.config.mjs` sets `site`/`base` for this repo's GitHub Pages project-page URL
-(`https://shantanu-research.github.io/website/`). If the repo is ever renamed, update `base` to match.
+`astro.config.mjs` sets `site` to the custom domain and `base` to `/`.
